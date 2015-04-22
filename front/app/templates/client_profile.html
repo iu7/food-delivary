@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{#{% import "bootstrap/wtf.html" as wtf %}#}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	    
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	}
+	.list-group-item{
+	    border-radius: 30px;
+	    background-color:#98AFC7;
+	    width: 50%;
+	}
+	.glyphicon-plus{
+		font-size: 18px;
+		color: #3276b1;
+	}
+	.glyphicon-trash{
+		font-size: 12px;
+	}
+
+	.glyphicon-pencil{
+		font-size: 12px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+	<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		    <div class="col-md-8 col-md-offset-5 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Personal data</i></b></font></h3>
+		     </div>
+		     <div class="col-md-8 col-md-offset-2 centerfy">
+			<hr class="featurette-divider">
+			{#{{ user}}#}
+		        <table>
+				<tr>
+					<td align=right><h4>name</h4></td>
+					<td><h4><font color="black"><b>{{ user['name'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>email</h4></td>
+					<td><h4><font color="black"><b>{{ user['email'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>telephone</h4></td>
+					<td><h4><font color="black"><b>{{ user['telephone'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>points</h4></td>
+					<td><h4><font color="black"><b>{{ user['points'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>member since</h4></td>
+					<td><h4><font color="black"><b>{{ user['member_since'] }}</b></font></h4></td>
+				</tr>
+			</table>
+			<table>
+			<hr class="featurette-divider">
+			<tr>
+			<td>
+				<a href="{{url_for('main.user_data_edit',name=user['name'])}}">
+					<button type="submit" class="btn btn-primary" id="submit">Profile Edit</button>
+				</a>
+			</td>
+			<td>
+				<a href="{{url_for('main.user_password_change', name=user['name'])}}">
+					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
+				</a>
+			</td>
+			<td>
+				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
+					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
+				</a>
+			</td>
+			</tr>
+			</table>
+		    </div>
+	     </div>
+	    </div>
+
+	</div>
+
+
+{%endblock base_content %}
+
+

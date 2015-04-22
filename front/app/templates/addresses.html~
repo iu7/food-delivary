@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{#{% import "bootstrap/wtf.html" as wtf %}#}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	}
+	.list-group-item{
+	    
+	    border-radius: 30px;
+	    background-color:#CCCCDF;
+	    width: 100%;
+	}
+	.glyphicon-plus{
+		font-size: 25px;
+		color: #3EA055;
+	}
+	.glyphicon-trash{
+		font-size: 20px;
+	}
+
+	.glyphicon-pencil{
+		font-size: 20px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+
+<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		     <div class="col-md-8 col-md-offset-5 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Addresses</i></b></font></h3>
+			
+		     </div>
+		   
+
+		     <div class="col-md-8 col-md-offset-2 centerfy">{#11111#}
+			<hr class="featurette-divider">
+			 {% if error_message %}
+			  <div class="bs-example">
+			    <div class="alert alert-danger alert-error">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> {{error_message}}
+			    </div>
+			  </div>
+		     {% elif result_message %}
+			<div class="alert alert-success">
+  				  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  				  <strong>Success!</strong> {{ result_message }}
+			</div>
+		     {% endif %}
+			{% if address_list %}
+			{% for address in address_list %}
+			{#<hr class="featurette-divider">#}
+			<div class=container align=center>
+			<div class="list-group">
+			<div href="#" class="list-group-item">
+			    <h4 class="list-group-item-heading"><font color="black"><b>{{address['street']}}</b></font></h4>
+			    <div class="list-group-item-text">
+			     <table>
+				<tr>
+					<td align=right>{% if address['city'] %} City:</td>
+					<td><b>{{address['city']}}</b> {% endif %}</td>
+				</tr>
+				<tr>
+					<td align=right>{% if address['station'] %} Station:</td>
+					<td><b>{{address['station']}} {% endif %}</b></td>
+				</tr>
+				<tr>
+					<td align=right>{% if address['entrance'] %} Entrance:</td>
+					<td> <b>{{address['entrance']}} {% endif %}</b></td>
+				</tr>
+				<tr>
+					<td align=right>{% if address['floor'] %} Floor:</td>
+					<td> <b>{{address['floor']}} {% endif %}</b></td>
+				</tr>
+				<tr>
+					<td align=right>{% if address['passcode'] %} Passcode:</td>
+					<td> <b>{{address['passcode']}} {% endif %}</b></td>
+				</tr>
+			      </table>
+			     <br>
+				<table>
+				<tr>
+				<td>
+				 <a href="{{url_for('main.client_address_update', name=user['name'], 
+						address_id=address['address_id'], city=address['city'],street=address['street']),
+						station=address['station'],entrance=address['entrance'],floor=address['floor'],
+						passcode=address['passcode']) }}">
+				  <b><div title="Edit address" class="glyphicon glyphicon-pencil"><font color="white"></font></div></b>
+				 </a>
+				</td>
+				<td>
+	 			 <a href="{{url_for('main.client_address_delete', name=user['name'], address_id=address['address_id'])}}">
+				   <b><div title="Delete address" class="glyphicon glyphicon-trash"><font color="white"></font></div></b>
+				 </a>
+				</td>
+				</table>
+			    </div>
+			</div>
+			</div>
+			</div>{#CONTAINER DIV#}
+			{% endfor %}
+			{% endif %}
+		    </div>{#11111#}
+
+	      </div>{#container#}
+		<br>
+		{% if can_add %}
+		<div align=center>
+		  <a href="{{url_for('main.client_address_create', name=user['name'])}}">
+		    <b><div title="Add address" class="glyphicon glyphicon-plus"><font color="white"></font></div></b>
+		  </a>
+		</div>
+		{%endif%}
+	    </div>{#jumbotron#}
+	</div>{#col-md#}
+{%endblock base_content %}
+
+

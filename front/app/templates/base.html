@@ -1,0 +1,91 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+     <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ url_for('main.index') }}"><b>Food Delivery</b></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+	
+	 <ul class="nav navbar-nav">
+          <li><a href="{{ url_for('main.about') }}">About</a></li>
+	  <li><a href="#"><b>Make Order!</b></a></li>
+          {#<li><a href="#contact">Contact</a></li>#}
+	  {#<li class="dropdown">
+	   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Cities <span class="caret"></span></a>
+	   <ul class="dropdown-menu" role="menu">
+	     <li><a href="#">Action</a></li>
+	     <li><a href="#">Another action</a></li>
+	     <li><a href="#">Something else here</a></li>
+	     <li class="divider"></li>
+	     <li class="dropdown-header">Nav header</li>
+	     <li><a href="#">Separated link</a></li>
+	     <li><a href="#">One more separated link</a></li>
+	   </ul>
+	  </li>#}
+          </ul>
+	
+
+	 
+	  {% if not user %}
+	          <!-- Register button -->
+		  <div class="navbar-form navbar-right">
+		   <a href="{{ url_for('main.register') }}">
+		    <button type="submit" class="btn btn-primary">Sign Up</button>
+		   </a>
+		  </div>
+		  <!--Sign in button -->
+		  <form method="POST" action="{{ url_for('main.login') }}" class="navbar-form navbar-right">
+			{% if signin_failure %}
+			
+				    <div class="alert alert-danger alert-error">
+					<a href="#" class="close" data-dismiss="alert">&times;</a>
+					<strong>Error!</strong> Incorrect email or password!.
+				    </div>
+			
+			{% endif %}
+		    <div class="form-group">
+		      <input name="email" id="email" type="text" placeholder="Email" class="form-control">
+		    </div>
+		    <div class="form-group">
+		      <input name="password" id="password" type="password" placeholder="Password" class="form-control">
+		    </div>
+		    <button type="submit" class="btn btn-success" id="submit">Sign In</button>
+			
+		  </form>
+		  
+	  {% else %}
+		  <div class="navbar-form navbar-right">
+		    <div class="form-group">
+			<h4><span class="label">Hello, {{user['name']}} </span><h4>
+		    </div>
+	     	    <div class="form-group">
+			<a href="{{ url_for('main.user_profile', name=user['name']) }}">
+			<button type="submit" class="btn btn-success" id="submit">Profile</button>
+			</a>
+		    </div>
+		    <div class="form-group">
+			<a href="{{ url_for('main.logout') }}">
+			<button type="submit" class="btn btn-success" id="submit">Sign Out</button>
+			</a>
+		    </div>
+		  </div>
+	 {% endif %}
+        </div><!--/.navbar-collapse -->
+	
+      </div>
+    </nav>
+{% block base_content %}{% endblock base_content %}
+
+{% endblock content %}
+
+{% block add_content %}
+{% endblock add_content %}
+

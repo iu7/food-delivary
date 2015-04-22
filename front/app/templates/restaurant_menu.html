@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	    max-width: 180px;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+	.list-group-item{
+	    
+	    border-radius: 30px;
+	    background-color:#CCCCDF;
+	    width: 100%;
+	}
+	.glyphicon-plus{
+		font-size: 25px;
+		color: #FFFFFF;
+	}
+	.glyphicon-trash{
+		font-size: 20px;
+	}
+
+	.glyphicon-pencil{
+		font-size: 20px;
+	}
+
+</style>
+
+{% endblock body %}
+
+{%block base_content %}
+
+<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		     <div class="col-md-8 col-md-offset-4 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Restaurant menu</i></b></font></h3>
+			
+		     </div>
+		   
+		     <div class="col-md-8 col-md-offset-2 centerfy">{#11111#}
+			<hr class="featurette-divider">
+			 {% if error_message %}
+			  <div class="bs-example">
+			    <div class="alert alert-danger alert-error">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> {{error_message}}
+			    </div>
+			  </div>
+		     {% elif result_message %}
+			<div class="alert alert-success">
+  				  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  				  <strong>Success!</strong> {{ result_message }}
+			</div>
+		     {% endif %}
+
+
+		     <div class=container align=center>
+		      <div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle"	type="button" data-toggle="dropdown">Add menu item</button>
+		        <ul class="dropdown-menu" aria-labelledby="add_menu" style="background-color:#CCCCDF;padding:10px;">
+			
+			     <form method="POST" action="{{ url_for('main.restaurant_menu',name=user['name'],
+					menu_id=menu_data['menu']['menu_id'], restaurant_id=menu_data['restaurant_id']) }}" id="form">
+				{{ form.hidden_tag() }}
+				{{ wtf.form_field(form.title) }}
+				{{ wtf.form_field(form.price) }}
+				{{ wtf.form_field(form.info) }}
+				<div align=center>
+				  <button class="btn btn-success"> <div class="glyphicon glyphicon-plus"></div>
+				  </button>
+				</div>
+			     </form>
+			</ul>
+		       </div>
+		      </div>
+
+			<hr class="featurette-divider">
+			{% if menu_data %}
+			{% for menu in menu_data['menu']['menu_items'] %}
+			{#<hr class="featurette-divider">#}
+			<div class=container align=center>
+			<div class="list-group">
+			<div href="#" class="list-group-item">
+			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
+			    <div class="list-group-item-text">
+			     <table>
+				<tr>
+					<td align=right>{% if menu['price'] %} Title:</td>
+					<td><b>{{menu['title']}}</b> {% endif %}</td>
+					
+				</tr>
+				<tr>
+					<td align=right>{% if menu['price'] %} Price:</td>
+					<td><b>{{menu['price']}}</b> {% endif %}</td>
+				</tr>
+				<tr>
+					<td align=right>{% if menu['info'] %} Info:</td>
+					<td><b>{{menu['info']}} {% endif %}</b></td>
+				</tr>
+			      </table>
+			     <br>
+				<table>
+				<tr>
+				<td>
+				<a href="{{url_for('main.restaurant_menu_update', name=user['name'], menu_item_id=menu['menu_item_id'],
+						restaurant_id=menu_data['restaurant_id'], menu_id=menu_data['menu']['menu_id'],
+						title=menu['title'], price=menu['price'], info=menu['info']) }}">
+				  <b><div title="Edit menu item" class="glyphicon glyphicon-pencil"><font color="white"></font></div></b>
+				 </a>
+				</td>
+				<td>
+	 			 <a href="{{url_for('main.restaurant_menu_delete', name=user['name'], menu_item_id=menu['menu_item_id'],
+						restaurant_id=menu_data['restaurant_id'], menu_id=menu_data['menu']['menu_id'])}}">
+				   <b><div title="Delete menu item" class="glyphicon glyphicon-trash"><font color="white"></font></div></b>
+				 </a>
+				</td>
+				</table>
+			    </div>
+			</div>
+			</div>
+			</div>{#CONTAINER DIV#}
+			{% endfor %}
+			{% endif %}
+		    </div>{#11111#}
+
+	      </div>{#container#}
+		<br>
+	    </div>{#jumbotron#}
+	</div>{#col-md#}
+{%endblock base_content %}
+
+
+
+

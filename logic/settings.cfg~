@@ -1,0 +1,12 @@
+[RestaurantBackend]
+URL= http://localhost:
+PORT= 5003
+
+[ClientBackend]
+URL= http://localhost:
+PORT= 5002
+
+[AuthBackend]
+URL = http://localhost:
+PORT = 5004
+

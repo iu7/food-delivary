@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{super() }}
+<body background="{{ url_for('static', filename='img/regpic5.jpg') }}"></body>
+
+<style>
+	.jumbotron {
+	    border-radius: 30px;
+	    background-color: #E1E1FA;
+	}
+
+	<style>
+	table {
+	  border-collapse: separate;
+	  border-spacing: 5px 0; 
+	}
+	td {
+	  padding: 5px 5px;
+	  height: 90px;
+	  width: 90px;
+	}
+
+</style>
+{% endblock body %}
+
+
+{% block base_content %}
+<div class="container" style="margin-top:20px">
+ <div class="col-md-9 col-md-offset-0 centerfy">
+	<div class="jumbotron">
+	<div class="container">
+	   <div class="col-md-9 col-md-offset-1 centerfy">
+		<h2><center>Restaurant Registration</center></h2><br>
+		{% if error_message %}
+				  <div class="bs-example">
+				    <div class="alert alert-danger alert-error">
+					<a href="#" class="close" data-dismiss="alert">&times;</a>
+					<strong>Error!</strong> {{error_message}}
+				    </div>
+				  </div>
+		{% endif %}
+		<form method="POST" action="{{ url_for('main.restaurant_register') }}" id="form">
+			 {{ form.csrf_token }}
+			{#{{ wtf.quick_form(form, form_type='small') }}#}
+			{{ wtf.form_field(form.name) }}
+			{{ wtf.form_field(form.email) }}
+			{{ wtf.form_field(form.password) }}
+			{{ wtf.form_field(form.password_confirm) }}
+			{{ wtf.form_field(form.cuisines) }}
+			<h6>To select multiple items, press ctrl</h6>
+			<hr class="featurette-divider">
+			<table>
+			<tr><th colspan=4><b>Working days</b></th></tr>
+			<tr>
+				<td>{{ wtf.form_field(form.monday) }}</td>
+				<td>{{ wtf.form_field(form.tuesday) }}</td>
+				<td>{{ wtf.form_field(form.wednesday) }}</td>
+				<td>{{ wtf.form_field(form.thursday) }}</td>
+				<td>{{ wtf.form_field(form.friday) }}</td>
+				<td>{{ wtf.form_field(form.saturday) }}</td>
+				<td>{{ wtf.form_field(form.sunday) }}</td>
+			</tr>
+			</table>
+			<table>
+			<tr><th colspan=4><b>Order reception time</b></th></tr>
+			<tr>
+				<td align=center><b>from</b></td>
+				<td>{{ wtf.form_field(form.openfrom_h) }}</td>
+				<td>{{ wtf.form_field(form.openfrom_m) }}</td>
+				<td align=center><b>to</b></td>
+				<td>{{ wtf.form_field(form.opento_h) }}</td>
+				<td>{{ wtf.form_field(form.opento_m) }}</td>
+			</tr>
+			</table>
+			{{ wtf.form_field(form.min_price) }}
+			{{ wtf.form_field(form.delivery_payment) }}
+			{{ wtf.form_field(form.delivery_time) }}
+			{{ wtf.form_field(form.online_payment) }}
+			{{ wtf.form_field(form.city) }}
+			{{ wtf.form_field(form.street) }}
+			{{ wtf.form_field(form.telephone) }}
+			<hr class="featurette-divider">
+			<h3>Officials information</h3>
+			<hr class="featurette-divider">
+			{{ wtf.form_field(form.official_name) }}
+			{{ wtf.form_field(form.official_email) }}
+			{{ wtf.form_field(form.official_telephone) }}
+			{{ wtf.form_field(form.order_email) }}
+			{{ wtf.form_field(form.info) }}
+			<div align=center><button type="submit" form="form" value="Submit" class="btn btn-primary">Sign up!</button></div>
+		</form>
+		<br>
+		<br>
+	   </div>
+	 </div>
+  	 </div>{#jumbotron#}
+
+
+
+
+ </div>
+</div>
+
+
+{% endblock base_content %}

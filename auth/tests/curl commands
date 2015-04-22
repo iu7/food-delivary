@@ -1,0 +1,20 @@
+REGISTRATION COMMAND
+curl -H 'Content-Type: application/json' -d '{"email":"2@mail.ru", "password":"123456", "role":"Client"}'  http://localhost:5000/register
+
+LOGIN COMMAND
+curl 'http://localhost:5000/login?email=21@mail.ru&password=123456'
+
+SESSION STATE CHECKING
+curl 'http://localhost:5000/session/state?session_id=314403cc-be1d-4955-8516-68e94a943e6d'
+
+PASSWORD CHANGE
+curl -X PUT -H 'Content-Type: application/json' -d '{"email":"21@mail.ru", "password":"123456", "new_password":"1"}'  http://localhost:5000/user/password/change
+
+EMAIL CHANGE
+curl -X PUT -H 'Content-Type: application/json' -d '{"email":"21@mail.ru", "password":"123456", "new_email":"1"}'  http://localhost:5000/user/email/change
+
+LOGOUT
+curl 'http://localhost:5000/logout?session_id=314403cc-be1d-4955-8516-68e94a943e6d'
+
+DELETE
+curl curl -X DELETE -H 'Content-Type: application/json' -d '{"email":"12@mail.ru", "password":"123457", "session_id":"314403cc-be1d-4955-8516-68e94a943e6d"}' http://localhost:5000/user/delete

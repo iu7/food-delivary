@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	    
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	}
+	.list-group-item{
+	    border-radius: 30px;
+	    background-color:#98AFC7;
+	    width: 50%;
+	}
+	.glyphicon-plus{
+		font-size: 18px;
+		color: #3276b1;
+	}
+	.glyphicon-trash{
+		font-size: 12px;
+	}
+
+	.glyphicon-pencil{
+		font-size: 12px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+	<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		    <div class="col-md-8 col-md-offset-5 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Create address</i></b></font></h3>
+		     </div>
+		     
+		     <div class="col-md-8 col-md-offset-2 centerfy">
+			<form method="POST" action="{{url_for('main.client_address_create', name=user['name'])}}" id="form">
+			{{ form.hidden_tag() }}
+			{{ wtf.form_field(form.city) }}
+			{{ wtf.form_field(form.street) }}
+			{{ wtf.form_field(form.station) }}
+			{{ wtf.form_field(form.entrance) }}
+			{{ wtf.form_field(form.passcode) }}
+			{{ wtf.form_field(form.floor) }}
+			<button type="submit" class="btn btn-primary" id="form">Save</button>
+		</form>
+		    </div>
+	     </div>
+	    </div>
+
+	</div>
+
+
+{%endblock base_content %}
+
+

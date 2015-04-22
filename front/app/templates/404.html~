@@ -1,0 +1,15 @@
+{% extends "bootstrap/base.html" %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/404.jpg') }}">
+{% endblock body %}
+
+{% block content %}
+
+<div style="top: 50%; left: 50%; position: absolute;">
+        <div><h1><font color="black">Error 404!</h1></font>
+		<a href="{{ url_for('main.index')}}"> <h2><font color=8AC007>Back to home page</font></h2></a>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 15px 0 15px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+<hr class="featurette-divider">
+<div class="col-md-8 col-md-offset-2 centerfy">
+    <div class="jumbotron" style="background: #C0C0C0;">
+      <div class="container">
+            <div class="col-md-8 col-md-offset-4 centerfy">
+                <h3 class=""><font color=#008080><b><i>Profile edit</i></b></font></h3>
+	     </div>
+	     <div class="col-md-8 col-md-offset-1 centerfy">
+		<hr class="featurette-divider">
+		{#{{ user}}#}
+                <table><tr>
+		{% if error_message %}
+			  <div class="bs-example">
+			    <div class="alert alert-danger alert-error">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> {{error_message}}
+			    </div>
+			  </div>
+		{% elif result_message %}
+			<div class="alert alert-success">
+  				  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  				  <strong>Success!</strong> {{ result_message }}
+			</div>
+		{% endif %}
+		<form method="POST" action="{{url_for('main.user_data_edit', name=user['name'])}}" id="form">
+			{{ form.hidden_tag() }}
+			{{ wtf.form_field(form.name, value=user['name']) }}
+			{{ wtf.form_field(form.email, value=user['email']) }}
+			{{ wtf.form_field(form.telephone, value=user['telephone']) }}
+
+			<button type="submit" class="btn btn-primary" id="form">Save</button>
+		</form>
+			<a href="{{url_for('main.user_password_change', name=user['name'])}}">
+				<button class="btn btn-danger">Delete profile</button>
+			</a>
+		</tr></table>
+		
+            </div>
+      </div>
+</div>
+
+
+{%endblock base_content %}
+
+

@@ -1,0 +1,62 @@
+###############RESTAURANTS
+REGISTRATION COMMAND
+curl -X POST -H 'Content-Type: application/json' -d '{"name":"Hello, Friend", "telephone" : "89099946885", "user_id":1, "email" : "ha@m.ru"}'  http://localhost:5000/restaurant/register
+
+DELETE
+curl -X DELETE http://localhost:5000/restaurant/1/delete
+
+RESTAURANT_UPDATE
+curl -X PUT -H 'Content-Type: application/json' -d '{"name":"Hello, Avgusta", "telephone" : 2, "user_id":1, "email" : "ha@m.ru"}' 'http://localhost:5000/restaurant/1/update'
+
+
+################OFFICIALS
+REGISTRATION COMMAND
+curl -X POST -H 'Content-Type: application/json' -d '{"name":"Lessina Avgusta", "telephone" : "89099946885", "info":"very best restaurant", "email" : "ha@m.ru"}'  http://localhost:5000/restaurant/1/officials/create
+
+DELETE
+curl -X DELETE http://localhost:5000/restaurant/officials/3/delete
+
+OFFICIALS_UPDATE
+curl -X PUT -H 'Content-Type: application/json' -d '{"name":"Lessina Olya", "telephone" : "+78088835774", "info":"very best restaurant", "email" : "ha@m.ru"}' 'http://localhost:5000/restaurant/officials/1/update'
+
+###############CUISINES
+REGISTRATION COMMAND
+curl -X POST -H 'Content-Type: application/json' -d '{"title" : "Hawaian"}'  http://localhost:5000/restaurant/cuisine/create
+
+curl -X POST -H 'Content-Type: application/json' -d '{"cuisines" : [6,7,8]}'  http://localhost:5000/restaurant/1/cuisines/add
+
+curl -X DELETE http://localhost:5000/restaurant/cuisine/11/delete
+
+
+################ATTRIBUTES
+curl -X PUT -H 'Content-Type: application/json' -d '{"open_from" : "10:00","online_payment" : 0, "min_payment":600}' 'http://localhost:5000/restaurant/attributes/1/update'
+
+################MENUITEMS
+curl -X POST -H 'Content-Type: application/json' -d '{"title" : "Coca-Cola", "price":100, "menu_id" : 2}'  http://localhost:5000/restaurant/1/menu/2/menu_item/create
+
+curl -X PUT -H 'Content-Type: application/json' -d '{"price" : 250}' http://localhost:5000/restaurant/2/menu/2/menu_item/2/update
+
+curl -X DELETE http://localhost:5000/restaurant/1/menu/1/menu_item/2/delete
+
+#################ORDERS
+curl -X POST -H 'Content-Type: application/json' -d '{"user_id" : "2"}' http://localhost:5000/restaurant/1/orders/create
+
+curl -X PUT -H 'Content-Type: application/json' -d '{"confirmed" : 0}'  http://localhost:5000/restaurant/1/orders/1/update
+
+curl -X DELETE http://localhost:5000/restaurant/1/orders/1/delete
+
+#################ORDER ITEMS
+
+curl -X POST -H 'Content-Type: application/json' -d '{"menu_item_id" : 3}' http://localhost:5000/restaurant/orders/2/order_item/create
+
+curl -X DELETE http://localhost:5000/restaurant/orders/2/order_item/3/delete
+
+##################ADDRESS
+curl -X POST -H 'Content-Type: application/json' -d '{"city" : "Moscow", "station" : "Some","street":"Helovinka", "telephone" : "89099945664"}' http://localhost:5000/restaurant/1/address/create
+
+curl -X POST -H 'Content-Type: application/json' -d '{"city" : "Moscow", "station" : "Some","street":"Helovinka", "telephone" : "890999asd45664"}' http://localhost:5000/restaurant/2/address/create
+
+curl -X PUT -H 'Content-Type: application/json' -d '{"city" : "Moscow", "station" : "Some","street":"Helovinka", "telephone" : "89099945664"}' http://localhost:5000/restaurant/1/address/2/update
+
+
+curl -X DELETE http://localhost:5000/restaurant/1/address/1/delete

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{#{% import "bootstrap/wtf.html" as wtf %}#}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	    
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	}
+	.ttd
+	{
+	    padding:0 20px 0 20px;
+	}
+	.list-group-item{
+	    border-radius: 30px;
+	    background-color:#98AFC7;
+	    width: 50%;
+	}
+	.glyphicon-user{
+		font-size: 30px;
+		color: #2B547E;
+	}
+	.glyphicon-home{
+		font-size: 30px;
+		color: #614051;
+	}
+
+	.glyphicon-list-alt{
+		font-size: 30px;
+		color: #CD7F32;
+	}
+	.glyphicon-font{
+		font-size: 30px;
+		color: #9F000F;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+	<hr class="featurette-divider">
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		    <div class="col-md-8 col-md-offset-2 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Restaurant general information</i></b></font></h3>
+		    </div>
+
+		    <div class="col-md-8 col-md-offset-2 centerfy">
+			<hr class="featurette-divider">
+			  <table>
+				<tr>
+					<td align=right><h4>name</h4></td>
+					<td><h4><font color="black"><b>{{ user['name'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>email</h4></td>
+					<td><h4><font color="black"><b>{{ user['email'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>telephone</h4></td>
+					<td><h4><font color="black"><b>{{ user['telephone'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>email for orders</h4></td>
+					<td><h4><font color="black"><b>{{ user['order_email'] }}</b></font></h4></td>
+				</tr>
+				<tr>
+					<td align=right><h4>activated</h4></td>
+					<td><h4><font color="black"><b>{{ user['activated'] }}</b></font></h4></td>
+				</tr>
+			</table>
+			<hr class="featurette-divider">
+			<table>
+			<tr>
+			<td>
+				<a href="{{url_for('main.user_data_edit',name=user['name'])}}">
+					<button type="submit" class="btn btn-primary" id="submit">Profile Edit</button>
+				</a>
+			</td>
+			<td>
+				<a href="{{url_for('main.user_password_change', name=user['name'])}}">
+					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
+				</a>
+			</td>
+			</tr>
+			
+			</table>
+
+			<br>
+			<div class="col-md-8 col-md-offset-0 centerfy">
+		          <h3 class=""><font color=#008080><b><u><i>Additional</i></u></b></font></h3><br>
+		   	 </div>
+
+			<table frame="below">
+			<tr>
+			<td align=center>
+				<a href="{{url_for('main.restaurant_menu', name=user['name'])}}">
+					<div title="Restaurnt attributes information" 
+					class="glyphicon glyphicon-list-alt"><h3><b>Menu</b></h3></div>
+				</a>
+			</td>
+			<td align=center>
+				<a href="{{url_for('main.restaurant_attributes', name=user['name'])}}">
+					<div title="Restaurnt attributes information" 
+					class="glyphicon glyphicon-font"><h3><b>Attributes</b></h3></div>
+				</a>
+			</td>
+			<td align=center>
+				<a href="{{url_for('main.restaurant_officials', name=user['name'])}}">
+					<div title="Restaurant officials inforamtion"
+					class="glyphicon glyphicon-user"><h3><b>Officials</b></h3></div>
+				</a>
+			</td>
+			<td align=center>
+				<a href="{{url_for('main.restaurant_address', name=user['name'])}}">
+					<div title="Restaurant address information" 
+					class="glyphicon glyphicon-home"><h3><b>Address</b></h3></div>
+				</a>
+			</td>
+			</tr>
+			</table>
+		    </div>
+
+	     </div>
+	    </div>
+	</div>
+
+
+{%endblock base_content %}
+
+

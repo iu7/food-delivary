@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block body %}
+{{ super() }}
+<style>
+	.carousel-indicators li {
+	  background-color: #669966;
+	}
+	.carousel-indicators .active {
+	  background-color: #2D1F17;
+	}
+	.carousel {
+		background-color: #3B3131;
+	}
+	body.modal-open .supreme-container{
+	    -webkit-filter: blur(1px);
+	    -moz-filter: blur(1px);
+	    -o-filter: blur(1px);
+	    -ms-filter: blur(1px);
+	    filter: blur(1px);
+	}
+	
+</style>
+
+{% endblock body %}
+
+{% block base_content %}
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner" role="listbox">
+
+
+        <div class="item active" align=center>
+          <img src="{{url_for('static', filename='img/home7.jpg')}}" alt="First slide">{#pizza.jpg#}
+          <div class="container">
+            <div class="carousel-caption">
+              <div style="color: #6869F1"><h1><b>Make order from variety of restaurants</b></h1></div>
+              <p></p>
+              <p><a class="btn btn-md btn-warning" href="#" role="button"><b>Go to menu's</b></a></p>
+            </div>
+          </div>
+        </div>
+	
+
+        <div class="item" align=center>
+          <img src="{{url_for('static', filename='img/home6.jpg')}}" alt="Second slide">{#pasta.jpg#}
+          <div class="container">
+            <div class="carousel-caption">
+              <div style="color: #D87333"><h1><b>Sign up and collect points</b></h1></div>
+              <p></p>
+              {#<p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>#}
+            </div>
+          </div>
+        </div>
+
+
+        <div class="item" align=center>
+          <img src="{{url_for('static', filename='img/home8.png')}}" alt="Third slide">{#dessert.jpg#}
+          <div class="container">
+            <div class="carousel-caption">
+              <div style="color:#FDD017"><h1><b>Create restaurant's profile</b></h1></div>
+              <p></p>
+              {#<p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>#}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div><!-- /.carousel -->
+
+
+
+<hr class="featurette-divider">
+
+{% endblock base_content %}
+
