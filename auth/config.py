@@ -7,7 +7,7 @@ class Config:
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	MAIL_SUBJECT_PREFIX = 'Food Delivery'
 	MAIL_SENDER = 'Food Delivery Manager'
-	MAIL_ADMIN = os.environ.get('FLASKY_ADMIN') or 'food.delivery.ds@gmail.com' #distributedsystem
+	MAIL_ADMIN = os.environ.get('FLASKY_ADMIN') or 'food.delivery.ds@gmail.com'
 
 	SESSION_LIFETIME = timedelta(seconds=15)
 	REDIS_HOST = 'localhost'
@@ -24,7 +24,7 @@ class DevelopmentConfig(Config):
 	MAIL_PORT = 587
 	MAIL_USE_TLS = True
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'food.delivery.ds@gmail.com'#'distributed.systems.iu7@gmail.com'
-	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'distributedsystem'
+	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
 		'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
