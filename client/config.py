@@ -2,7 +2,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-	SECRET_KEY = os.environ.get('SECRET_KEY') or 'Dzhumagulov B. Course Project'
+	SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(64)
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	FLASKY_MAIN_SUBJECT_PREFIX = 'Flask app'
 	FLASKY_MAIL_SENDER = 'Flask admin'
