@@ -3,8 +3,8 @@ from flask import render_template, session, redirect, url_for, request, make_res
 from . import main
 import requests
 from flask import current_app, abort
-from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,\
-		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm
+from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,\
+		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity
 import furls
 
 #TODO ADMIN
@@ -113,7 +113,9 @@ def user_profile(name):
 	response = render_template('404.html')
 	session_id = request.cookies.get('session_id')
 	if session_id:
+		print 'ONE'
 		flag, result = furls.auth_session_state(session_id)
+		print result
 		if flag:
 			if result['role'] == 'Client':
 				flag, data = furls.client_info(result['user_id'])
@@ -548,5 +550,57 @@ def restaurant_menu_update(name):
 				restaurant_id=restaurant_id,menu_item_id=menu_item_id))
 			response.set_cookie('session_id', session_id)
 	return response
+
+
+#ORDERS AND MENUS
+@main.route('/orders/make_order', methods=['POST', 'GET'])
+def make_order():
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	user = None
+	if session_id:
+		flag, result = furls.auth_session_state(session_id, user_data=True)	
+		if flag: user = result['user']
+
+	form = OrderCity()
+	form.cities.choices = session.get('cities')
+	if request.method == 'POST' and form.cities.choices is None:
+		flag, result = furls.restaurant_get_cities(real_city=True)
+		form.cities.choices = [(x,x) for x in result['cities_list']]
+	if form.validate_on_submit():
+		session.pop('cities', None)
+		response = redirect(url_for('main.make_order_menus', city=form.data.get('cities')))
+	else:
+		flag, result = furls.restaurant_get_cities(real_city=True)
+		form.cities.choices = [(x,x) for x in result['cities_list']]
+		session['cities'] = form.cities.choices
+		response = make_response(render_template('orders_city.html', user=user, form=form))
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
+
+
+@main.route('/orders/make_order/<city>/restaurants', methods=['POST', 'GET'])
+def make_order_menus(city):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	user = None
+	if session_id:
+		flag, result = furls.auth_session_state(session_id, user_data=True)	
+		if flag: user = result['user']
+
+	form = OrderAttributes()
+	if form.validate_on_submit():
+		cuisine_check_list = request.form.getlist('cuisine_list')
+		#TODO CONTINUE upload restaurant data
+		return str(form.data) + str(cuisine_check_list)
+	else:
+		flag, result = furls.restaurant_get_cuisines(city)
+		response = make_response(render_template('orders_page.html',form=form,user=user,\
+					city=city,cuisines=result['cuisine_list']))
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
+
+
+
 
 

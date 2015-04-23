@@ -70,8 +70,6 @@ class Restaurant(db.Model):
 		db.session.commit()
 
 
-
-
 	def get_cuisines(self):
 		result = []
 		for cuisine in self.cuisines:
@@ -236,7 +234,7 @@ class Cuisine(db.Model):
 		db.session.commit()
 
 	@staticmethod
-	def get_cuisines():
+	def get_cuisines(city):
 		result = []
 		clist = Cuisine.query.all()
 		for c in clist:
@@ -652,6 +650,16 @@ class City(db.Model):
 		if any(v.isdigit() for v in value):
 			raise ValueError('Incorrect city name')
 		return value
+
+	@staticmethod
+	def get_real_cities():
+		result = []
+		cities = City.query.all()
+		for city in cities:
+			if Address.query.filter_by(city=city.name).first():
+				result.append(city.name)
+		return {'cities_list' : result}
+
 
 	@staticmethod
 	def get_cities():

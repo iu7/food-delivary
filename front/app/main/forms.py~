@@ -119,9 +119,15 @@ class MenuItemForm(Form):
 	price = FloatField('Price', validators=[NumberRange(min=0)])
 	info = TextAreaField('Comments', validators=[Optional(), Length(max=256)])
 
-
-
-
+class OrderCity(Form):
+	cities = SelectField('', coerce=unicode)
+	
+class OrderAttributes(Form):
+	#cuisines = SelectMultipleField('Cuisines', coerce=int)
+	min_payment = FloatField('Minimum order cost', validators=[Optional(), NumberRange(min=0)])
+	online_payment = BooleanField('Online payment')
+	bonuses = BooleanField('Bonuses')
+	opened = BooleanField('Opened')
 
 
 

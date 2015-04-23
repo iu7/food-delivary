@@ -79,10 +79,12 @@ def session_state():
 		store.pop(session_id)
 		expired = True
 	else:
+		email = None
 		user = User.query.filter_by(id=uid).first()
 		if user:
 			role = user.get_role_name()
-	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role)
+			email = user.email
+	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role, email=email)
 
 @main.route('/auth/user/password/update', methods=['PUT'])
 def password_update():

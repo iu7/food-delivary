@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background_orders.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 15px 0 15px;
+	}
+	
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+<br><br><br>
+<div class="col-md-10 col-md-offset-1 centerfy">
+    <div class="jumbotron" style="background:#BCC6CC;">
+      <div class="container">
+            {#<div class="col-md-8 col-md-offset-3 centerfy">
+                <h3 class=""><font color=#008080><b><i>Choose your location</i></b></font></h3>
+	     </div>#}
+
+	<div class="row">
+
+	     {#Order Attributes#}
+	     <div class="col-md-3">
+		<form method="POST" action="{{url_for('main.make_order_menus', city=city)}}" id="form">
+			<i><h3>Preferences</h3></i>
+			<hr class="featurette-divider">
+			<h4>Cuisines</h4>
+			<div class="well well-sm"style="max-height:300px;overflow: auto;margin-left:0px;">
+			  <ul class="list-group">
+			   {% for cuisine in cuisines %}
+			   	<li class="list-group-item" >
+				  <input type="checkbox" name="cuisine_list" id="{{cuisine['title']}}" 
+					value="{{cuisine['id']}}"/>  {{cuisine['title']}}
+				</li>
+			   {% endfor %}
+			  </ul>
+			</div>
+
+			<hr class="featurette-divider">
+		        <table><tr>
+		
+				{{ form.hidden_tag() }}
+				{{ wtf.form_field(form.min_payment) }}
+				{{ wtf.form_field(form.online_payment) }}
+				{{ wtf.form_field(form.opened) }}
+				{{ wtf.form_field(form.bonuses) }}
+				<br>
+				<div align=left><button type="submit" class="btn btn-success" id="form">Submit</button></div>
+		
+			</tr></table>
+		</form>
+             </div>{#Order attributes#}
+
+	     <div class="col-md-8 col-md-offset-1">
+		helloLASHDLKJASHDlkjaSHDKLJASHDlkaJHSDLKJASHDlkjaHDSLKAHD
+		{% for x in range(0,500) %}
+			x<br>
+		{% endfor %}
+	     </div>
+
+
+	</div>{#row#}
+
+      </div>
+</div>
+
+
+{%endblock base_content %}
+
+

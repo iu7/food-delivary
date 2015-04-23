@@ -38,7 +38,7 @@ def auth_user_info():
 	user = User.query.filter_by(id=user_id).first()
 	if not user:
 		raise UException(message='Unexpected server exception', status_code=500, payload='Could not find user')
-	return jsonify(email=user.email, user_id=user.id, role=user.role)
+	return jsonify(email=user.email, user_id=user.id, role=user.get_role_name())
 
 @main.route('/auth/login')
 def login():
@@ -82,7 +82,8 @@ def session_state():
 		user = User.query.filter_by(id=uid).first()
 		if user:
 			role = user.get_role_name()
-	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role)
+			email = user.email
+	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role, email=)
 
 @main.route('/auth/user/password/update', methods=['PUT'])
 def password_update():

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/city_food.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 15px 0 15px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+<br><br><br>
+<div class="col-md-6 col-md-offset-3 centerfy">
+    <div class="jumbotron" style="background: #C0C0C0;">
+      <div class="container">
+            <div class="col-md-8 col-md-offset-3 centerfy">
+                <h3 class=""><font color=#008080><b><i>Choose your location</i></b></font></h3>
+	     </div>
+	     <div class="col-md-8 col-md-offset-2 centerfy">
+		<hr class="featurette-divider">
+		{#{{ user}}#}
+                <table><tr>
+		<form method="POST" action="{{url_for('main.make_order', name=user['name'])}}" id="form">
+			{{ form.hidden_tag() }}
+			<b>{{ wtf.form_field(form.cities,) }}<b>
+			<br>
+			<div align=center><button type="submit" class="btn btn-primary" id="form">Go!</button></div>
+		</form>
+		</tr></table>
+		
+            </div>
+      </div>
+</div>
+
+
+{%endblock base_content %}
+
+

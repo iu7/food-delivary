@@ -52,24 +52,27 @@ def auth_login():
 
 @main.route('/auth/session/state')
 def auth_session_state():
-	session_id = request.args.get('session_id')
+	session_id = request.json.get('session_id')
+	user_data = request.json.get('user_data')
+	print user_data, type(user_data)
 	if not session_id:
 		raise UException('Incorrect request')
 	flag, auth_result = furls.auth_session_state(session_id)
 	if flag:
 		if not auth_result['expired']:
 			result = auth_result
-			'''if auth_result['role'] == 'Client':
-				flag, data = furls.cli_info(auth_result['user_id'])
-				result['name'] = data['name']
-			elif auth_result['role'] == 'Manager':
-				flag, data = furls.restaurant_info(auth_result['user_id'])
-				result['name'] = data['name']
-			else:
-				pass'''
 			code = 200
-			if not flag:
-				code = result['status_code']
+			if user_data:
+				if result['role'] == 'Client':	
+					flag, user_result = furls.cli_info(result['user_id'])
+				elif result['role'] == 'Manager':
+					flag, user_result = furls.restaurant_info(result['user_id'])
+				if flag:
+					#user_result['email'] == result['email']
+					result['user'] = user_result
+					code = 200
+				else:
+					code = result['status_code']
 		else: 
 			result = auth_result
 			code = result['status_code']
@@ -137,8 +140,9 @@ def client_address_list():
 @main.route('/restaurant/cities/list')
 def restaurant_cities():
 	cities = None
+	real_city = request.json.get('real_city')
 	try:
-		flag, result = furls.restr_get_cities()
+		flag, result = furls.restr_get_cities(real_city=real_city)
 		if flag: code = 200
 		else: code = result['status_code']
 	except Exception as exc:
@@ -148,8 +152,9 @@ def restaurant_cities():
 @main.route('/restaurant/cuisines/list')
 def restaurant_cuisines():
 	cities = []
+	city = request.args.get('city')
 	try:
-		flag, result = furls.restr_get_cuisines()
+		flag, result = furls.restr_get_cuisines(city)
 		if flag: code = 200
 		else: code = result['status_code']
 	except Exception as exc:
@@ -488,10 +493,19 @@ def restaurant_menu_item_update():
 
 
 
+@main.route('/restaurant/cities/add', methods=['POST'])
+def restaurant_cities_add():
+	city = request.json.get('city')
+	if not city:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_cities_add(city)
+	if flag: code = 201
+	else: code = result['status_code']
+	return jsonify(result), code
 
 
 
-
+	
 
 
 

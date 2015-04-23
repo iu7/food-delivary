@@ -160,16 +160,17 @@ def cli_address_list(user_id):
 ##############################################################
 ##############################################################
 ############################RESTAURANTS
-def restr_get_cities():
+def restr_get_cities(real_city=False):
 	api_url = restr_url + '/restaurant/cities/list'
-	r = requests.get(api_url)
+	r = requests.get(api_url, data=json.dumps({'real_city':real_city}), headers=JSON_HEADER)
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def restr_get_cuisines():
+def restr_get_cuisines(city=None):
 	api_url = restr_url + '/restaurant/cuisines/list'
-	r = requests.get(api_url)
+	if city is not None: r = requests.get(api_url, params={'city':city})
+	else: r = requests.get(api_url)
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)	
@@ -335,6 +336,14 @@ def restaurant_menu_update(restaurant_id, menu_id, menu_item_id, data):
 	api_url = restr_url + '/restaurant/'+str(restaurant_id)+'/menu/'+str(menu_id)+'/menu_item/'+str(menu_item_id)+'/update'
 	r = requests.put(api_url, data=json.dumps(data), headers=JSON_HEADER)
 	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+def restaurant_cities_add(city):
+	api_url = restr_url + '/restaurant/cities/add'
+	r = requests.post(api_url, data=json.dumps({'city':city}), headers=JSON_HEADER)
+	if r.status_code == 201:
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)

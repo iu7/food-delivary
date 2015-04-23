@@ -549,17 +549,37 @@ def address_delete(restaurant_id, address_id):
 @main.route('/restaurant/cities/list')
 def restaurant_cities():
 	cities = []
+	real_city = request.json.get('real_city')
 	try:
-		cities = City.get_cities()
+		if real_city:
+			cities = City.get_real_cities()
+		else:
+			cities = City.get_cities()
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(cities)
 
+
+@main.route('/restaurant/cities/add', methods=['POST'])
+def restaurant_cities_add():
+	city = request.json.get('city')
+	if not cities:
+		raise UException('Incorrect request')
+	try:
+		db.session.add(City(city))
+		db.session.commit()
+	except ValueError as error:
+		raise UException(message=error.message)
+	except Exception as exc:
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(city), 201
+
 @main.route('/restaurant/cuisines/list')
 def restaurant_cuisines_list():
 	cuisines = []
+	city = request.args.get('city')
 	try:
-		cuisines = Cuisine.get_cuisines()
+		cuisines = Cuisine.get_cuisines(city)
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(cuisines)

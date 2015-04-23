@@ -82,9 +82,9 @@ def auth_login(email, password):
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def auth_session_state(session_id):
+def auth_session_state(session_id, user_data=False):
 	api_url = logic_url + '/auth/session/state'
-	r = requests.get(api_url, params={'session_id':session_id})
+	r = requests.get(api_url, data=json.dumps({'session_id':session_id, 'user_data' : user_data}), headers=JSON_HEADER)
 	data = json.loads(r.text)
 	if r.status_code == 200: 
 		flag = True
@@ -105,17 +105,20 @@ def auth_logout(session_id):
 
 ######################################################
 ######################################################
-def restaurant_get_cities():
+def restaurant_get_cities(real_city=False):
 	api_url = logic_url + '/restaurant/cities/list'
-	r = requests.get(api_url)
+	r = requests.get(api_url, data=json.dumps({'real_city':real_city}), headers=JSON_HEADER)
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
 
 
-def restaurant_get_cuisines():
+def restaurant_get_cuisines(city=None):
 	api_url = logic_url + '/restaurant/cuisines/list'
-	r = requests.get(api_url)
+	if city is not None:
+		r = requests.get(api_url, params={'city':city})
+	else:
+		r = requests.get(api_url)
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
@@ -240,6 +243,17 @@ def restaurant_menu_update(restaurant_id, menu_id, menu_item_id, data):
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
+
+def restaurant_cities_add(city):
+	api_url = logic_url + '/restaurant/cities/add'
+	r = requests.post(api_url, data=json.dumps({'city':city}), headers=JSON_HEADER)
+	if r.status_code == 201:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+	
+
 
 
 
