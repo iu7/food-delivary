@@ -1,0 +1,40 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 30px;
+	}
+	td
+	{
+	    padding:0 15px 0 15px;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+
+	<div class="col-md-5 col-md-offset-0 centerfy" >
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		<form method="POST" action="{{url_for('payment_online')}}" id="form">
+			<table>
+			  <tr>{{ wtf.form_field(form.card_number) }}</tr>
+			  <tr><th><b>Valid thru</b></th></tr>
+			  <tr>
+			  	<td>{{ wtf.form_field(form.valid_thru_month) }}</td>
+				<td>{{ wtf.form_field(form.valid_thru_year) }}</td>
+			  </tr>
+			  <tr>{{ wtf.form_field(form.card_holder_name) }}</tr>
+			  <tr>{{ wtf.form_field(form.cv_code) }}</tr>
+			</table>
+			<div align="center"><button type="submit" class="btn btn-md btn-primary" id="form">Submit</button></div>
+		</form>
+	      </div>
+	    </div>
+	</div>
+
+{% endblock %}
