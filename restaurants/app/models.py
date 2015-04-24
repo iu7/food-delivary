@@ -48,6 +48,38 @@ class Restaurant(db.Model):
 		self.email = email
 
 
+	@staticmethod
+	def get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time):
+		result = []
+		restaurant_list = Restaurant.query.all()
+		for restaurant in restaurant_list:
+			#if not restaurant.activated: continue
+			flag = True
+			attr = restaurant.attributes[0]
+			print min_payment, online_payment, opened, delivery_time,'\nNEW_LINE_NEW_LINE\n'
+			print attr, flag
+			flag = not min_payment or (min_payment and min_payment >= attr.min_payment)
+			print '1', flag
+			if flag: flag = not online_payment or online_payment == attr.online_payment
+			print '2', flag
+			if flag and opened and attr.open_to != attr.open_from:
+				now = datetime.now().time()
+				fr = attr.open_from.time()
+				to = attr.open_to.time()
+				if now >= fr:
+					if to > fr: flag = now <= to
+				elif now <= fr:
+					if to < fr: flag = now <= to
+					else: flag = False			
+			print '3', flag
+			if flag: flag = float(delivery_time) >= attr.delivery_time
+			print '4', flag
+			if flag:
+				result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
+					'telephone':restaurant.telephone, 'email':restaurant.email,\
+					'attributes' : attr.get_attributes()})
+		return result
+
 	def add_cuisines(self, cuisines):	
 		if type(cuisines) is type([]):
 			for cuisine in cuisines:

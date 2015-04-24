@@ -349,4 +349,16 @@ def restaurant_cities_add(city):
 	return flag, json.loads(r.text)
 
 
+def restaurants_by_preferences(data):
+	api_url = restr_url + '/restaurant/list/by_preferences'
+	r = requests.get(api_url, data=json.dumps(data), headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+
+
+
 

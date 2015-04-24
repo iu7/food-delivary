@@ -152,8 +152,9 @@ def restaurant_cities():
 @main.route('/restaurant/cuisines/list')
 def restaurant_cuisines():
 	cities = []
+	city = request.args.get('city')
 	try:
-		flag, result = furls.restr_get_cuisines()
+		flag, result = furls.restr_get_cuisines(city)
 		if flag: code = 200
 		else: code = result['status_code']
 	except Exception as exc:
@@ -503,7 +504,15 @@ def restaurant_cities_add():
 	return jsonify(result), code
 
 
-
+@main.route('/restaurant/list/by_preferences')
+def restaurants_by_preferences():
+	data = request.json.get('data')
+	if not data:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurants_by_preferences(data)
+	if not flag: code = result['status_code']
+	else: flag = 200
+	return jsonify(result), code
 	
 
 

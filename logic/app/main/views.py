@@ -504,7 +504,15 @@ def restaurant_cities_add():
 	return jsonify(result), code
 
 
-
+@main.route('/restaurant/list/by_preferences')
+def restaurants_by_preferences():
+	data = request.json.get('data')
+	if not data:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurants_by_preferences(data)
+	if not flag: code = result['status_code']
+	else: code = 200
+	return jsonify(result), code
 	
 
 

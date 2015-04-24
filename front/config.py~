@@ -11,7 +11,7 @@ class Config:
 	FLASKY_MAIL_SENDER = 'Flask admin'
 	FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
 
-	LOGIC_URL = settings.get('ClientBackend', 'URL') + settings.get('ClientBackend', 'PORT')
+	LOGIC_URL = settings.get('LogicBackend', 'URL') + settings.get('LogicBackend', 'PORT')
 
 	@staticmethod
 	def init_app(app):

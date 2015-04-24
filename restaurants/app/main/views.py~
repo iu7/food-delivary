@@ -579,12 +579,34 @@ def restaurant_cuisines_list():
 	cuisines = []
 	city = request.args.get('city')
 	try:
-		if city is not None:
-			cuisines = Cuisine.get_cuisines()
-		else: cuisines = Cuisine.get_cuisines(city)
+		cuisines = Cuisine.get_cuisines(city)
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(cuisines)
+
+
+@main.route('/restaurant/list/by_preferences')
+def restaurants_by_preferences():
+	min_payment = request.json.get('min_payment')
+	online_payment = request.json.get('online_payment')
+	#bonuses = request.json.get('bonuses')
+	opened = request.json.get('opened')
+	delivery_time = request.json.get('delivery_time')
+	try:
+		print '!!!!!!!!!!!!!!!!!!!!!'
+		result = Restaurant.get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time)
+	except Exception as exc:
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(result)
+
+
+
+
+
+
+
+
+
 
 
 

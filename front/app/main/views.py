@@ -591,8 +591,8 @@ def make_order_menus(city):
 	form = OrderAttributes()
 	if form.validate_on_submit():
 		cuisine_check_list = request.form.getlist('cuisine_list')
-		#TODO CONTINUE upload restaurant data
-		return str(form.data) + str(cuisine_check_list)
+		flag, result = furls.restaurants_by_preferences(form.data)#TODO +CITIES + CUISINES
+		return str(result)
 	else:
 		flag, result = furls.restaurant_get_cuisines(city)
 		response = make_response(render_template('orders_page.html',form=form,user=user,\
