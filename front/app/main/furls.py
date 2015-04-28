@@ -252,8 +252,10 @@ def restaurant_cities_add(city):
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def restaurants_by_preferences(data):
+def restaurants_by_preferences(data, cuisines,city):
 	api_url = logic_url + '/restaurant/list/by_preferences'
+	data['cuisines'] = cuisines
+	data['city'] = city
 	r = requests.get(api_url, data=json.dumps({'data':data}), headers=JSON_HEADER)
 	if r.status_code == 200:
 		flag = True

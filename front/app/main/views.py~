@@ -587,20 +587,22 @@ def make_order_menus(city):
 	if session_id:
 		flag, result = furls.auth_session_state(session_id, user_data=True)	
 		if flag: user = result['user']
-
 	form = OrderAttributes()
 	if form.validate_on_submit():
 		cuisine_check_list = request.form.getlist('cuisine_list')
-		flag, result = furls.restaurants_by_preferences(form.data)#TODO +CITIES + CUISINES
-		return str(result)
+		flag, result = furls.restaurants_by_preferences(form.data, cuisine_check_list, city)
+		response = make_response(render_template('orders_page.html',form=form,user=user,\
+					city=city, cuisines=result['cuisine_list'], restaurants=result['restaurant_list']))
 	else:
 		flag, result = furls.restaurant_get_cuisines(city)
 		response = make_response(render_template('orders_page.html',form=form,user=user,\
-					city=city,cuisines=result['cuisine_list']))
+					city=city,cuisines=result['cuisine_list'],first=True))
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
-
+@main.route('/orders/make_order/<city>/restaurants/<name>/menu', methods=['POST', 'GET'])
+def make_order_from_restaurant(name):
+	return 'Hey !'
 
 
 

@@ -282,11 +282,11 @@ def attributes_update(attributes_id):
 	saturday = request.json.get('wdays')[5]
 	sunday = request.json.get('wdays')[6]
 	try:
-		if open_from: attributes.open_from = open_from
-		if open_to: attributes.open_to = open_to
-		if min_payment: attributes.min_payment = min_payment
-		if delivery_payment: attributes.delivery_payment = delivery_payment
-		if delivery_time: attributes.delivery_time = delivery_time
+		if open_from is not None: attributes.open_from = open_from
+		if open_to is not None: attributes.open_to = open_to
+		if min_payment is not None: attributes.min_payment = min_payment
+		if delivery_payment is not None: attributes.delivery_payment = delivery_payment
+		if delivery_time is not None: attributes.delivery_time = delivery_time
 		if online_payment is not None: attributes.online_payment = online_payment
 		if monday is not None : attributes.monday = monday
 		if tuesday is not None : attributes.tuesday = tuesday
@@ -589,15 +589,16 @@ def restaurant_cuisines_list():
 def restaurants_by_preferences():
 	min_payment = request.json.get('min_payment')
 	online_payment = request.json.get('online_payment')
-	#bonuses = request.json.get('bonuses')
 	opened = request.json.get('opened')
 	delivery_time = request.json.get('delivery_time')
+	city = request.json.get('city')
+	cuisines = request.json.get('cuisines')
 	try:
-		print '!!!!!!!!!!!!!!!!!!!!!'
-		result = Restaurant.get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time)
+		result, cuisine_list = Restaurant.get_restaurant_by_preferences(min_payment, \
+				online_payment, opened, delivery_time, city, cuisines)
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
-	return jsonify(restaurant_list=result)
+	return jsonify(restaurant_list=result, cuisine_list=cuisine_list)
 
 
 

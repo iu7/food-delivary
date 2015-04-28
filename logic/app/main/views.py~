@@ -413,6 +413,7 @@ def restaurant_attributes():
 @main.route('/restaurant/attributes/update', methods=['PUT'])
 def restaurant_attributes_update():
 	data = request.json.get('data')
+	print data
 	attribute_id = request.json.get('attribute_id')
 	restaurant_id = request.json.get('restaurant_id')
 	if not data:
@@ -511,7 +512,7 @@ def restaurants_by_preferences():
 		raise UException('Incorrect request')
 	flag, result = furls.restaurants_by_preferences(data)
 	if not flag: code = result['status_code']
-	else: flag = 200
+	else: code = 200
 	return jsonify(result), code
 	
 

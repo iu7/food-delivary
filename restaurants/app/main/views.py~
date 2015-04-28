@@ -589,15 +589,16 @@ def restaurant_cuisines_list():
 def restaurants_by_preferences():
 	min_payment = request.json.get('min_payment')
 	online_payment = request.json.get('online_payment')
-	#bonuses = request.json.get('bonuses')
 	opened = request.json.get('opened')
 	delivery_time = request.json.get('delivery_time')
+	city = request.json.get('city')
+	cuisines = request.json.get('cuisines')
 	try:
-		print '!!!!!!!!!!!!!!!!!!!!!'
-		result = Restaurant.get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time)
+		result, cuisine_list = Restaurant.get_restaurant_by_preferences(min_payment, \
+				online_payment, opened, delivery_time, city, cuisines)
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
-	return jsonify(result)
+	return jsonify(restaurant_list=result, cuisine_list=cuisine_list)
 
 
 

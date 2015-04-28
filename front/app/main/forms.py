@@ -130,7 +130,7 @@ class OrderAttributes(Form):
 	opened = BooleanField('Opened now')
 	delivery_time = SelectField('Average delivery time', coerce=unicode, default=24,\
 			choices=[(str(x), str(x)+' min.') for x in range(30, 120, 30)] + \
-				[('2:00','2 h.'), ('4:00', '4 h.'), ('12:00', '12 h.'),('24:00', '24 h.') ])
+				[(str(2*60),'2 h.'), (str(4*60), '4 h.'), (str(12*60), '12 h.'),(str(24*60), '24 h.') ])
 
 
 

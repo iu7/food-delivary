@@ -49,20 +49,46 @@ class Restaurant(db.Model):
 
 
 	@staticmethod
-	def get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time):
+	def get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time, city, cuisines):
 		result = []
 		restaurant_list = Restaurant.query.all()
 		for restaurant in restaurant_list:
-			#if not restaurant.activated: continue
-			flag = True
+			#TODO if not restaurant.activated: continue
+			if restaurant.address[0].city != city: continue
+			#print city, cuisines
+			if not cuisines: flag = True
+			else:
+				flag = False
+				#print 'restr_cuisines', restaurant.cuisines, 'checked', cuisines
+				for cuisine in restaurant.cuisines: flag |= str(cuisine.cuisine_id) in cuisines
+			if not flag: continue
 			attr = restaurant.attributes[0]
-			print min_payment, online_payment, opened, delivery_time,'\nNEW_LINE_NEW_LINE\n'
-			print attr, flag
+			#print min_payment, online_payment, opened, delivery_time,'\nNEW_LINE_NEW_LINE\n'
+			#print attr, flag
 			flag = not min_payment or (min_payment and min_payment >= attr.min_payment)
-			print '1', flag
+			#print '1', flag
 			if flag: flag = not online_payment or online_payment == attr.online_payment
-			print '2', flag
-			if flag and opened and attr.open_to != attr.open_from:
+			#print '2', flag
+			if flag and opened: flag = restaurant.is_opened()			
+			#print '3', flag
+			if flag: flag = float(delivery_time) >= attr.delivery_time
+			#print '4', flag
+			if flag:
+				result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
+					'telephone':restaurant.telephone, 'email':restaurant.email,\
+					'attributes' : attr.get_attributes(), 'cuisines':restaurant.get_cuisines()})
+		cuisines = Cuisine.get_cuisines(city)['cuisine_list']
+		if not cuisines: cuisines = []
+		return result, cuisines
+
+
+	def is_opened(self):
+		attr = self.attributes[0]
+		days = [attr.monday,attr.tuesday,attr.wednesday,attr.thursday,attr.friday,attr.saturday,attr.sunday]
+		flag = days[datetime.today().weekday()]
+		if flag:
+			flag = attr.open_to != attr.open_from
+			if flag:
 				now = datetime.now().time()
 				fr = attr.open_from.time()
 				to = attr.open_to.time()
@@ -70,15 +96,10 @@ class Restaurant(db.Model):
 					if to > fr: flag = now <= to
 				elif now <= fr:
 					if to < fr: flag = now <= to
-					else: flag = False			
-			print '3', flag
-			if flag: flag = float(delivery_time) >= attr.delivery_time
-			print '4', flag
-			if flag:
-				result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
-					'telephone':restaurant.telephone, 'email':restaurant.email,\
-					'attributes' : attr.get_attributes()})
-		return result
+					else: flag = False
+			else: flag = True
+		return flag
+
 
 	def add_cuisines(self, cuisines):	
 		if type(cuisines) is type([]):
