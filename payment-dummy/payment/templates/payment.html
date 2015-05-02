@@ -16,11 +16,13 @@
 {% endblock %}
 
 {% block content %}
-
-	<div class="col-md-5 col-md-offset-0 centerfy" >
-	    <div class="jumbotron" style="background: #C0C0C0;">
-	      <div class="container">
+	<br><br><br>
+	<div class="col-md-5 col-md-offset-3 centerfy" >
+	    <div class="jumbotron" style="background: #D0D0D0;">
+	      <div class="container">	
+		<div align=center><h4><b><i>Online payment center</i></b></h4></div>
 		<form method="POST" action="{{url_for('payment_online')}}" id="form">
+			{{form.hidden_tag()}}
 			<table>
 			  <tr>{{ wtf.form_field(form.card_number) }}</tr>
 			  <tr><th><b>Valid thru</b></th></tr>
@@ -29,9 +31,10 @@
 				<td>{{ wtf.form_field(form.valid_thru_year) }}</td>
 			  </tr>
 			  <tr>{{ wtf.form_field(form.card_holder_name) }}</tr>
-			  <tr>{{ wtf.form_field(form.cv_code) }}</tr>
+			  <tr><td>{{ wtf.form_field(form.cv_code) }}</td><td><img src="{{ url_for('static',filename='vm.jpg') }}" width="80" height="30"></td></tr>
 			</table>
-			<div align="center"><button type="submit" class="btn btn-md btn-primary" id="form">Submit</button></div>
+			<br>
+			<div align="center"><button type="submit" class="btn btn-md btn-success" id="form">Submit</button></div>
 		</form>
 	      </div>
 	    </div>
