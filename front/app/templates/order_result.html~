@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	    max-width: 180px;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+	.list-group-item{
+	    
+	    border-radius: 30px;
+	    background-color:#CCCCDF;
+	    width: 100%;
+	}
+	.glyphicon-plus{
+		font-size: 20px;
+		color: green;
+	}
+	.glyphicon-shopping-cart{
+		font-size: 40px;
+		color: green;
+	}
+
+</style>
+</script>
+
+{% endblock body %}
+
+{%block base_content %}
+
+<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		     <div class="col-md-8 col-md-offset-5 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Success!</i></b></font></h3>
+			
+		     </div>
+		   
+		     <div class="col-md-8 col-md-offset-2 centerfy">{#11111#}
+			<hr class="featurette-divider">
+			 {% if error_message %}
+			  <div class="bs-example">
+			    <div class="alert alert-danger alert-error">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> {{error_message}}
+			    </div>
+			  </div>
+		     {% elif result_message %}
+			<div class="alert alert-success">
+  				  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  				  <strong>Success!</strong> {{ result_message }}
+			</div>
+		     {% endif %}
+			<div class="container">	
+				<div class="jumbotron">
+				<h4>Congratulations!</h4>
+				<b>You'r order is accepted. 
+				Soon operator will contact you.<b>
+				</div>
+			</div>
+
+		    </div>{#11111#}
+
+	      </div>{#container#}
+		<br>
+	    </div>{#jumbotron#}
+	</div>{#col-md#}
+{%endblock base_content %}
+
+
+
+

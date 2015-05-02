@@ -133,7 +133,15 @@ class OrderAttributes(Form):
 				[(str(2*60),'2 h.'), (str(4*60), '4 h.'), (str(12*60), '12 h.'),(str(24*60), '24 h.') ])
 
 
-
+class OrderExecution(Form):
+	name = StringField('Name', validators=[Required()])
+	telephone = StringField('Telephone', validators=[Regexp(TELEPHONE_FORMAT)])
+	street = StringField('Street', validators=[Required()])
+	station = StringField('Underground Station',validators=[Optional()])
+	entrance = IntegerField('Entrance', validators=[Optional(), ])
+	floor = IntegerField('Floor', validators=[Optional()])
+	passcode = StringField('Passcode', validators=[Optional()])
+	
 
 
 

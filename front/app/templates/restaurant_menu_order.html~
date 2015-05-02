@@ -24,18 +24,31 @@
 	    width: 100%;
 	}
 	.glyphicon-plus{
-		font-size: 25px;
-		color: #FFFFFF;
-	}
-	.glyphicon-trash{
 		font-size: 20px;
+		color: green;
 	}
-
-	.glyphicon-pencil{
-		font-size: 20px;
+	.glyphicon-shopping-cart{
+		font-size: 40px;
+		color: green;
 	}
 
 </style>
+<script type="text/javascript">
+function findTotal(min_payment){
+    var arr = document.getElementsByName('order_list');
+    var prr = document.getElementsByName('price_list')
+    var tot=0;
+    for(var i=0;i<arr.length;i++){
+        if(parseFloat(arr[i].value))
+            tot += parseFloat(arr[i].value)*parseFloat(prr[i].value);
+    }
+    document.getElementById('total').value = tot;
+    if(tot <= min_payment )
+	document.getElementById("confBtn").disabled = true;
+    else
+	document.getElementById("confBtn").disabled = false;
+}
+</script>
 
 {% endblock body %}
 
@@ -66,42 +79,19 @@
   				  <strong>Success!</strong> {{ result_message }}
 			</div>
 		     {% endif %}
-
-
-		     <div class=container align=center>
-		      <div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle"	type="button" data-toggle="dropdown">Add menu item</button>
-		        <ul class="dropdown-menu" aria-labelledby="add_menu" style="background-color:#CCCCDF;padding:10px;">
-			
-			     <form method="POST" action="{{ url_for('main.restaurant_menu',name=user['name'],
-					menu_id=menu_data['menu']['menu_id'], restaurant_id=menu_data['restaurant_id']) }}" id="form">
-				{{ form.hidden_tag() }}
-				{{ wtf.form_field(form.title) }}
-				{{ wtf.form_field(form.price) }}
-				{{ wtf.form_field(form.info) }}
-				<div align=center>
-				  <button class="btn btn-success"> <div class="glyphicon glyphicon-plus"></div>
-				  </button>
-				</div>
-			     </form>
-			</ul>
-		       </div>
-		      </div>
-
-			<hr class="featurette-divider">
 			{% if menu_data %}
+			<form method="GET" action="{{url_for('main.order_confirmation',name=name, city=city, 							restaurant_id=restaurant_id) }}">
 			{% for menu in menu_data['menu']['menu_items'] %}
 			{#<hr class="featurette-divider">#}
 			<div class=container align=center>
-			<div class="list-group">
+			<div class="list-group" name="address_list">
 			<div href="#" class="list-group-item">
 			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
-			    <div class="list-group-item-text" title="{{menu['title']}}">
-			     <table>
+			    <div class="list-group-item-text">
+			     <table title="{{menu['title']}}">
 				<tr>
 					<td align=right>{% if menu['price'] %} Title:</td>
-					<td><b>{{menu['title']}}</b> {% endif %}</td>
-					
+					<td><b>{{menu['title']}}</b> {% endif %}</td>				
 				</tr>
 				<tr>
 					<td align=right>{% if menu['price'] %} Price:</td>
@@ -111,29 +101,39 @@
 					<td align=right>{% if menu['info'] %} Info:</td>
 					<td><b>{{menu['info']}} {% endif %}</b></td>
 				</tr>
+				
 			      </table>
 			     <br>
 				<table>
 				<tr>
-				<td>
-				<a href="{{url_for('main.restaurant_menu_update', name=user['name'], menu_item_id=menu['menu_item_id'],
-						restaurant_id=menu_data['restaurant_id'], menu_id=menu_data['menu']['menu_id'],
-						title=menu['title'], price=menu['price'], info=menu['info']) }}">
-				  <b><div title="Edit menu item" class="glyphicon glyphicon-pencil"><font color="white"></font></div></b>
-				 </a>
-				</td>
-				<td>
-	 			 <a href="{{url_for('main.restaurant_menu_delete', name=user['name'], menu_item_id=menu['menu_item_id'],
-						restaurant_id=menu_data['restaurant_id'], menu_id=menu_data['menu']['menu_id'])}}">
-				   <b><div title="Delete menu item" class="glyphicon glyphicon-trash"><font color="white"></font></div></b>
-				 </a>
-				</td>
+					<td>Amount:</td>
+					<td>
+					    <input size="5" value="0" name="order_list" 
+							onchange="findTotal({{min_payment}});"
+							id="{{menu['menu_item_id']}}" type="number" min="0" max="99"/>
+					    <input type="hidden" value="{{menu['price']}}" name="price_list"/>
+					    <input type="hidden" value="{{menu['menu_item_id']}}" name="menu_item_list"/>
+					    <input type="hidden" value="{{menu['title']}}" name="menu_title_list"/>
+					</td>
+				</tr>
+				
 				</table>
 			    </div>
 			</div>
 			</div>
 			</div>{#CONTAINER DIV#}
 			{% endfor %}
+			<hr class="featurette-divider">
+			<div align=center><b>Minimal order cost is {{min_payment}}</b></div><br>
+			<div align=center>
+				<b>Total</b> : <input type="text" name="total" value="0" id="total" readonly/><br>
+			</div><br>
+			<div align=center>
+				<button type="submit" class="btn btn-primary" name="confBtn" id="confBtn" 
+					title="Press to continue" disabled>
+					Confirm	</button>
+			</div>
+			</form>
 			{% endif %}
 		    </div>{#11111#}
 

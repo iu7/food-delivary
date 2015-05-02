@@ -9,7 +9,7 @@ class Config:
 	MAIL_SENDER = 'Food Delivery Manager'
 	MAIL_ADMIN = os.environ.get('FLASKY_ADMIN') or 'food.delivery.ds@gmail.com'
 
-	SESSION_LIFETIME = timedelta(seconds=15)
+	SESSION_LIFETIME = timedelta(days=1)
 	REDIS_HOST = 'localhost'
 	REDIS_PORT = 6379
 	REDIS_DB = 0

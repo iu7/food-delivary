@@ -3,6 +3,7 @@ import configparser
 settings = configparser.ConfigParser()
 settings.read('settings.cfg')
 basedir = os.path.abspath(os.path.dirname(__file__))
+from datetime import datetime, timedelta
 
 class Config:
 	SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(64)
@@ -10,8 +11,10 @@ class Config:
 	FLASKY_MAIN_SUBJECT_PREFIX = 'Flask app'
 	FLASKY_MAIL_SENDER = 'Flask admin'
 	FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
-
 	LOGIC_URL = settings.get('LogicBackend', 'URL') + settings.get('LogicBackend', 'PORT')
+
+	#PERMANENT_SESSION_LIFETIME = timedelta(seconds=2)
+	#SESSION_LIFETIME = timedelta(seconds=2)
 
 	@staticmethod
 	def init_app(app):

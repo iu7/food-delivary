@@ -4,7 +4,7 @@ from . import main
 import requests
 from flask import current_app, abort
 from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,\
-		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity
+		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, OrderExecution
 import furls
 
 #TODO ADMIN
@@ -600,9 +600,83 @@ def make_order_menus(city):
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
-@main.route('/orders/make_order/<city>/restaurants/<name>/menu', methods=['POST', 'GET'])
-def make_order_from_restaurant(name):
-	return 'Hey !'
+@main.route('/orders/make_order/<city>/restaurants/<name>/menu')
+def make_order_from_restaurant(city, name):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	user = None
+	if session_id:
+		flag, result = furls.auth_session_state(session_id, user_data=True)	
+		if flag: user = result['user']
+	restaurant_id = request.args.get('restaurant_id')
+	flag, result = furls.restaurant_menu(user_id=None, restaurant_id=restaurant_id)
+	min_payment = request.args.get('min_payment')
+	response = make_response(render_template('restaurant_menu_order.html', user=user, menu_data=result,\
+				min_payment=min_payment,city=city,name=name, restaurant_id=restaurant_id))
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
+
+@main.route('/orders/<city>/restaurants/<name>/<int:restaurant_id>/client/info', methods=['POST', 'GET'])
+def order_confirmation(city, name, restaurant_id):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	user = None
+	flag = False
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)	
+		if flag: user = auth_result['user']
+	form = OrderExecution()
+	if form.validate_on_submit():
+		order_list = session.get('order_list')
+		price_list = session.get('price_list')
+		menu_title_list = session.get('menu_title_list')
+		total = session.get('total')
+		session['client_data'] = form.data
+		response = make_response(render_template('order_final_confirmation.html',city=city, name=name,\
+				client_data=form.data,restaurant_id=restaurant_id, \
+				order_list=zip(order_list, price_list, menu_title_list), total=total, user=user))
+	else:
+		addresses = None
+		orders = request.args.getlist('order_list')
+		prices = request.args.getlist('price_list')
+		titles = request.args.getlist('menu_title_list')
+		zeros = [i for i in range(0, len(orders)) if orders[i] != '0']
+		order_list = [orders[i] for i in zeros]
+		price_list = [prices[i] for i in zeros]
+		menu_title_list = [titles[i] for i in zeros]		
+		session['order_list'] = order_list
+		session['price_list'] = price_list
+		session['menu_title_list'] = menu_title_list
+		session['total'] = request.args.get('total')
+		if flag:
+			if auth_result['role'] == 'Client':
+				flag, addresses = furls.client_address_list(auth_result['user_id'])
+				form.name.default = user['name']
+				form.telephone.default = user['telephone']
+				form.process()
+		response = make_response(render_template('orders_confirm_form.html', user=user, city=city, name=name,\
+						form=form,  addresses=addresses, restaurant_id=restaurant_id))
+	if session_id: response.set_cookie('session_id', session_id)	
+	return response
+
+@main.route('/orders/<city>/restaurants/<name>/<int:restaurant_id>/confirmation', methods=['POST', 'GET'])
+def order_confirmation_check(city, name, restaurant_id):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	user = None
+	flag = False
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)	
+		if flag: user = auth_result['user']
+	#TODO SAVE DATA IN DATABASE
+	online_payment = request.form.get('checkbox')
+	if not online_payment:
+		response = make_response(render_template('order_result.html', user=user, name=name, city=city))
+	else:
+		pass#TODO ONLINE PAYMENT
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
+
 
 
 

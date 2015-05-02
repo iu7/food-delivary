@@ -96,7 +96,7 @@
 			<div class="list-group">
 			<div href="#" class="list-group-item">
 			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
-			    <div class="list-group-item-text">
+			    <div class="list-group-item-text" title="{{menu['title']}}">
 			     <table>
 				<tr>
 					<td align=right>{% if menu['price'] %} Title:</td>

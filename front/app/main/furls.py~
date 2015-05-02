@@ -209,13 +209,14 @@ def restaurant_attributes_update(restaurant_id, attribute_id, data):
 	return flag, json.loads(r.text)
 
 
-def restaurant_menu(user_id):
+def restaurant_menu(user_id=None, restaurant_id=None):
 	api_url = logic_url + '/restaurant/menu'
-	r = requests.get(api_url, data=json.dumps({'user_id':user_id}), headers=JSON_HEADER)
+	r = requests.get(api_url, data=json.dumps({'user_id':user_id, 'restaurant_id':restaurant_id}), headers=JSON_HEADER)
 	if r.status_code == 200:
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
+
 
 def restaurant_menu_delete(restaurant_id, menu_id, menu_item_id):
 	api_url = logic_url + '/restaurant/menu_item/delete'
@@ -257,13 +258,19 @@ def restaurants_by_preferences(data, cuisines,city):
 	data['cuisines'] = cuisines
 	data['city'] = city
 	r = requests.get(api_url, data=json.dumps({'data':data}), headers=JSON_HEADER)
-	print r.text
 	if r.status_code == 200:
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)	
 
-
+def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, user_id=None):
+	api_url = logic_url + '/restaurant/order/confirm'
+	r = requests.post(api_url, data=json.dumps('restaurant_id':restaurant_id, 'order_list':order_list,\
+					'price_list':price_list, 'title_list':title_list, 'user_id':user_id), headers=JSON_HEADER)
+	if r.status_code == 201:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)	
 
 
 

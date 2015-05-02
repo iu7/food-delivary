@@ -105,7 +105,10 @@
 			
 	     		</div>
 			{% for restaurant in restaurants %}
-			<a href="{{ url_for('main.make_order_from_restaurant', name=restaurant['name'], city=city) }}">
+			{#{{ restaurant }}#}
+			<a href="{{ url_for('main.make_order_from_restaurant', name=restaurant['name'], city=city,
+							restaurant_id=restaurant['restaurant_id'],
+							min_payment=restaurant['attributes']['min_payment']) }}">
 				<div class="jumbotron jid">
 				<h2><font color=#8C001F><b>{{ restaurant['name'] }}</b></font></h2>
 				    <b>Cuisines:</b> {%for cuisine in restaurant['cuisines']%}{{cuisine['title']}} / {%endfor%}<br><br>
@@ -143,7 +146,8 @@
 
 
 					{#<div align=right>
-					    <a href="{{ url_for('main.make_order_from_restaurant', name=restaurant['name'], city=city) }}">
+					    <a href="{{ url_for('main.make_order_from_restaurant', name=restaurant['name'], 
+								city=city) }}">
 						<div class="glyphicon glyphicon-arrow-right"></div>
 					    </a>
 					</div>#}
@@ -153,9 +157,6 @@
 				{#{ restaurant }#}
 			{% endfor %}
 		{% endif %}
-		{#{% for x in range(0,500) %}
-			x<br>
-		{% endfor %}#}
 	     </div>
 
 

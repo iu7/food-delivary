@@ -465,7 +465,7 @@ class MenuItem(db.Model):
 	price = db.Column(db.Float)
 	info = db.Column(db.String(RestaurantConfig.MENU_INFO_MAX))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-	orderlist = db.relationship('OrderList', cascade='all,delete', backref='menuitem')
+	#orderlist = db.relationship('OrderList', cascade='all,delete', backref='menuitem')
 	bonuses = db.relationship('Bonus', cascade='all,delete', backref='menuitem')
 
 	def __init__(self, menu_id, title, price, info):
@@ -534,7 +534,7 @@ class Orders(db.Model):
 	__tablename__ = 'orders'
 	id = db.Column(db.Integer, primary_key=True)
 	__date = db.Column('date', db.DateTime(), default=datetime.utcnow())
-	user_id = db.Column(db.Integer, nullable=False)
+	user_id = db.Column(db.Integer)
 	confirmed = db.Column(db.Boolean, nullable=False)
 	restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
 	order_list = db.relationship('OrderList', cascade='all,delete', backref='orders')
@@ -612,21 +612,31 @@ class Orders(db.Model):
 class OrderList(db.Model):
 	__tablename__ = 'orderlist'
 	id = db.Column(db.Integer, primary_key=True)
-	menu_item_id = db.Column(db.Integer, db.ForeignKey('menuitems.id'))
+	#menu_item_id = db.Column(db.Integer, db.ForeignKey('menuitems.id'))
+	title = db.Column(db.String(RestaurantConfig.MENU_TITLE_LEN))
+	price = db.Column(db.Float)
 	order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
 
-	def __init__(self, menu_item_id, order_id):
-		self.menu_item_id = menu_item_id
+	def __init__(self, title, price, order_id):
+		#self.menu_item_id = menu_item_id
+		self.title = title
+		self.price = price
 		self.order_id = order_id
 
 	def get_order_list(self):
-		return {'order_list_item' : {'id' : self.id, 'order_id' : self.order_id, \
-			'menu_item' : MenuItem.query.filter_by(id=self.menu_item_id).first().get_menu_item()}}
+		return {'order_list_item' : {'id' : self.id, 'order_id' : self.order_id, 'title': self.title, 'price':self.price}}
+		#'menu_item' : MenuItem.query.filter_by(id=self.menu_item_id).first().get_menu_item()}}
 
-	@validates('menu_item_id')
-	def validate_manu_item_id(self, key, value):
-		if not MenuItem.query.filter_by(id=value).first():
-			raise ValueError('Incorrect menu_item_id')
+	@validates('title')
+	def validate_title(self, key, value):
+		if value is None or value == '':
+			raise ValueError('Incorrect title')
+		return value
+
+	@validates('price')
+	def validate_price(self, key, value):
+		if value is None or value < 0:
+			raise ValueError('Incorrect price')
 		return value
 
 	@validates('order_id')
@@ -636,8 +646,8 @@ class OrderList(db.Model):
 		return value
 
 	def __repr__(self):
-		return '<OrderList: id: %s, menu_item_id: %s, order_id: %s' \
-			% (str(self.id), str(self.menu_item_id), str(self.order_id))
+		return '<OrderList: id: %s, title: %s, price: %s, order_id: %s' \
+			% (str(self.id), str(self.title), str(self.price), str(self.order_id))
 
 class Address(db.Model):
 	__tablename__ = 'address'

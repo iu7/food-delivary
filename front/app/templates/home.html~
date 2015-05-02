@@ -2,6 +2,7 @@
 
 {% block body %}
 {{ super() }}
+<body background="{{ url_for('static', filename='img/wood_table_background.jpg') }}"></body>
 <style>
 	.carousel-indicators li {
 	  background-color: #669966;
@@ -44,7 +45,7 @@
             <div class="carousel-caption">
               <div style="color: #6869F1"><h1><b>Make order from variety of restaurants</b></h1></div>
               <p></p>
-              <p><a class="btn btn-md btn-warning" href=""{{ url_for('main.make_order') }}" role="button"><b>Go to menu's</b></a></p>
+              <p><a class="btn btn-md btn-warning" href="{{ url_for('main.make_order') }}" role="button"><b>Go to menu's</b></a></p>
             </div>
           </div>
         </div>
@@ -86,8 +87,6 @@
     </div><!-- /.carousel -->
 
 
-
-<hr class="featurette-divider">
 
 {% endblock base_content %}
 

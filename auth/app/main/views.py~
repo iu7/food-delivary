@@ -6,7 +6,7 @@ from .. exceptions import UException
 from .. models import User
 from uuid import uuid4
 
-SESSION_LIFETIME = timedelta(days=1)
+#SESSION_LIFETIME = timedelta(days=1)
 
 def create_session_id():
 	return unicode(uuid4())
@@ -79,11 +79,12 @@ def session_state():
 		store.pop(session_id)
 		expired = True
 	else:
+		email = None
 		user = User.query.filter_by(id=uid).first()
 		if user:
 			role = user.get_role_name()
 			email = user.email
-	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role, email=)
+	return jsonify(session_id=session_id, expired=expired, user_id=uid, role=role, email=email)
 
 @main.route('/auth/user/password/update', methods=['PUT'])
 def password_update():

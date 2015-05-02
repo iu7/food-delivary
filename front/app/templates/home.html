@@ -2,6 +2,7 @@
 
 {% block body %}
 {{ super() }}
+<body background="{{ url_for('static', filename='img/wood_table_background.jpg') }}"></body>
 <style>
 	.carousel-indicators li {
 	  background-color: #669966;
@@ -86,8 +87,6 @@
     </div><!-- /.carousel -->
 
 
-
-<hr class="featurette-divider">
 
 {% endblock base_content %}
 

@@ -439,11 +439,16 @@ def restaurant_attributes_update():
 @main.route('/restaurant/menu')
 def restaurant_menu():
 	user_id = request.json.get('user_id')
-	if not user_id:
+	restaurant_id = request.json.get('restaurant_id')
+	if not user_id and not restaurant_id:
 		raise UException('Incorrect request')
-	flag, result = furls.restaurant_info(user_id)
+	if not restaurant_id:
+		flag, result = furls.restaurant_info(user_id)
+	else: flag = True
 	if flag:
-		flag, result = furls.restaurant_menu(result['restaurant_id'])
+		if not restaurant_id:
+			restaurant_id = result['restaurant_id']
+		flag, result = furls.restaurant_menu(restaurant_id)
 		if not flag:
 			code = result['status_code']
 		else: code = 200
