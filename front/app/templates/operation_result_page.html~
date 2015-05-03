@@ -24,9 +24,9 @@
     <div class="jumbotron" style="background: #C0C0C0;">
       <div class="container">
             <div class="col-md-8 col-md-offset-4 centerfy">
-                <h3 class=""><font color=#008080><b><i>Profile edit</i></b></font></h3>
+                <h3 class=""><font color=#008080><b><i>Profile deletion</i></b></font></h3>
 	     </div>
-	     <div class="col-md-8 col-md-offset-1 centerfy">
+	     <div class="col-md-8 col-md-offset-2 centerfy">
 		<hr class="featurette-divider">
 		{#{{ user}}#}
                 <table><tr>
@@ -42,20 +42,7 @@
   				  <a href="#" class="close" data-dismiss="alert">&times;</a>
   				  <strong>Success!</strong> {{ result_message }}
 			</div>
-		{% endif %}
-		<form method="POST" action="{{url_for('main.user_data_edit', name=user['name'])}}" id="form">
-			{{ form.hidden_tag() }}
-			{{ wtf.form_field(form.name, value=user['name']) }}
-			{{ wtf.form_field(form.email, value=user['email']) }}
-			{{ wtf.form_field(form.telephone, value=user['telephone']) }}
-
-			<button type="submit" class="btn btn-primary" id="form">Save</button>
-		</form>
-			<a href="{{url_for('main.user_profile_delete', name=user['name'])}}">
-				<button class="btn btn-danger">Delete profile</button>
-			</a>
-		</tr></table>
-		
+		{% endif %}		
             </div>
       </div>
 </div>

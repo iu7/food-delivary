@@ -54,6 +54,31 @@ def register():
 	return response
 
 
+@main.route('/user/profile/<name>/delete', methods=['POST', 'GET'])
+def user_profile_delete(name):
+	response = render_template('404.html')
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, result = furls.auth_session_state(session_id, user_data=True)
+		if flag:
+			print result
+			user_id = result['user']['user_id']
+			session_id = result['session_id']
+			if request.method == 'GET':
+				response = make_response(render_template('delete_confirmation.html', user=result['user']))
+			elif request.method == 'POST':	
+				flag, result = furls.user_delete(user_id, session_id)
+				if flag:
+					response = make_response(render_template('operation_result_page.html',\
+							result_message='Profile successfully deleted!'))
+				else:
+					response = make_response(render_template('operation_result_page.html', error_message=result))
+	return response
+
+
+
 @main.route('/client/register', methods=['GET', 'POST'])
 def client_register():
 	form = ClientRegisterForm()
@@ -722,6 +747,5 @@ def order_confirmation_check(name, city, restaurant_id):
 ###########TODO	ADD ORDER HISTORY TO CLIENT AND MANAGER
 ###########TODO ADD ADMINISTARTOR PROFILE
 ###########TODO ADD EMAIL SENDING
-
 
 

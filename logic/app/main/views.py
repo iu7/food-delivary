@@ -534,8 +534,31 @@ def restaurant_order_confirmation():
 	return jsonify(result), code
 
 
-
-
+@main.route('/user/profile/delete', methods=['DELETE'])
+def user_profile_delete():
+	code = 400
+	user_id = request.args.get('user_id')
+	session_id = request.args.get('session_id')
+	if not user_id or not session_id:
+		raise UException('Incorrect request')
+	flag, auth_result = furls.auth_session_state(session_id)
+	if flag:
+		if not auth_result['expired']:
+			flag, logout_result = furls.auth_logout(session_id)
+			flag, user_result = furls.auth_user_raw_delete(user_id)
+			client_result = restaurant_result = None
+			if auth_result['role'] == 'Client':	
+				flag, client_result = furls.cli_delete(auth_result['user_id'])
+			elif auth_result['role'] == 'Manager':
+				flag,restaurant_result = furls.restr_delete(auth_result['user_id'])
+			result = {'logout':logout_result, 'user':user_result, 'client':client_result, 'restaurant':restaurant_result}
+			code = 200
+		else:
+			result = {'session_expired':True}
+	else:
+		result = auth_result
+	return jsonify(result), code
+		
 
 
 

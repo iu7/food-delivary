@@ -228,9 +228,9 @@ def restr_officials_create(restaurant_id, name, email, telephone, info=None):
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def restr_delete(restaurant_id):
-	api_url = restr_url + '/restaurant/' + str(restaurant_id) + '/delete'
-	r = requests.delete(api_url)
+def restr_delete(user_id):
+	api_url = restr_url + '/restaurant/delete'
+	r = requests.delete(api_url, params={'user_id':user_id})
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)

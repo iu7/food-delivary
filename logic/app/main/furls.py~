@@ -363,7 +363,6 @@ def restaurant_order_confirm(restaurant_id, data):
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
-	print r.text
 	return flag, json.loads(r.text)	
 
 

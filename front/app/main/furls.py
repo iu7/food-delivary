@@ -276,6 +276,16 @@ def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, 
 
 def payment_redirect_url(redirect_uri):
 	return payment_url + '/payment/dummy?redirect_uri=' + redirect_uri
-	
+
+
+def user_delete(user_id, session_id):
+	api_url = logic_url + '/user/profile/delete'
+	r = requests.delete(api_url, params={'user_id':user_id, 'session_id':session_id})
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
 
 

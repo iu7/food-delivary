@@ -36,7 +36,6 @@ def restaurant_register():
 def restaurant_info():
 	user_id = request.args.get('user_id')
 	restaurant_id = request.args.get('restaurant_id')
-	print user_id, restaurant_id
 	if user_id:
 		restaurant = Restaurant.query.filter_by(user_id=user_id).first()
 	elif restaurant_id:
@@ -45,7 +44,7 @@ def restaurant_info():
 	if not restaurant:
 		raise UException('Incorrect user_id')
 	return jsonify(name=restaurant.name, order_email=restaurant.email, activated=restaurant.activated,\
-				telephone=restaurant.telephone, restaurant_id=restaurant.id)
+				telephone=restaurant.telephone, restaurant_id=restaurant.id, user_id=restaurant.user_id)
 
 @main.route('/restaurant/<int:restaurant_id>/address/list')
 def restaurant_address_list(restaurant_id):
@@ -122,12 +121,18 @@ def restaurant_update(restaurant_id):
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(status='updated',restaurant_id=restaurant.id)
 
-@main.route('/restaurant/<int:restaurant_id>/delete', methods=['DELETE'])
-def restaurant_delete(restaurant_id):
-	restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+@main.route('/restaurant/delete', methods=['DELETE'])
+def restaurant_delete():
+	user_id = request.args.get('user_id')
+	if not user_id:
+		raise UException('Incorrect request')
+	restaurant = Restaurant.query.filter_by(user_id=user_id).first()
 	if not restaurant:
 		raise UException('Incorrect restaurant_id')
 	try:
+		for order in restaurant.orders:
+			order.restaurant_id = None
+			order.restaurant_name = restaurant.name + ' (not available)'
 		db.session.delete(restaurant)
 		db.session.commit()
 	except:
@@ -620,14 +625,15 @@ def restaurant_order_confirmation(restaurant_id):
 	if not title_list or not order_list or not price_list or not cdata or not total:
 		raise UException('Incorrect request')
 	try:
+		restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+		order = Orders(restaurant_id, restaurant.name, online_payment)
+		db.session.add(order)
+		db.session.flush()
 		destination = CustomerDestination(cdata['street'], cdata['station'], \
-						cdata['entrance'], cdata['passcode'],cdata['floor'])
-		customer = Customer(user_id, cdata['name'], cdata['telephone'])
+						cdata['entrance'], cdata['passcode'],cdata['floor'], order.id)
+		customer = Customer(user_id, cdata['name'], cdata['telephone'], order.id)
 		db.session.add(destination)
 		db.session.add(customer)
-		db.session.flush()
-		order = Orders(restaurant_id, customer.id, destination.id, online_payment)
-		db.session.add(order)
 		db.session.flush()
 		for o, t, p in zip(order_list, title_list, price_list):
 			for i in range(0, int(o)):

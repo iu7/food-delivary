@@ -36,10 +36,10 @@ class Restaurant(db.Model):
 
 	address = db.relationship('Address', cascade='all,delete', backref='resaturant')
 	menu = db.relationship('Menu', cascade='all,delete', backref='restaurant') 
-	orders = db.relationship('Orders', cascade='all,delete', backref='restaurant')
 	attributes = db.relationship('Attributes', cascade='all,delete', backref='restaurant')
 	officials = db.relationship('Officials', cascade='all,delete', backref='restaurant')
 	cuisines = db.relationship('RestaurantCuisines', cascade='all,delete', backref='restaurant')
+	orders = db.relationship('Orders', backref='restaurant')
 
 	def __init__(self, user_id, name, telephone, email):
 		self.user_id = user_id
@@ -538,18 +538,20 @@ class CustomerDestination(db.Model):
 	entrance = db.Column(db.String(16))
 	passcode = db.Column(db.String(32))
 	floor = db.Column(db.Integer)
+	order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
 
-	def __init__(self, street, station, entrance, passcode, floor):
+	def __init__(self, street, station, entrance, passcode, floor, order_id):
 		self.street = street
 		self.station = station
 		self.entrance = entrance
 		self.passcode = passcode
+		self.order_id = order_id
 		if floor: self.floor = int(floor)
 
 
 	def __repr__(self):
-		return '<CustomerDestionation: street: %s, station: %s, entrance: %s, passcode: %s, floor: %s' %\
-				(str(self.street),str(self.station),str(self.entrance),str(self.passcode),str(self.floor))
+		return '<CustomerDestionation: street: %s, station: %s, entrance: %s, passcode: %s, floor: %s, order_id: %s' %\
+			(str(self.street),str(self.station),str(self.entrance),str(self.passcode),str(self.floor), str(self.order_id))
 
 class Customer(db.Model):
 	__tablename__ = 'customers'
@@ -557,15 +559,17 @@ class Customer(db.Model):
 	user_id = db.Column(db.Integer)
 	name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), nullable=False)
 	telephone = db.Column(db.String(RestaurantConfig.TEL_LEN), nullable=False)
-	
-	def __init__(self, user_id, name, telephone):
+	order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))	
+
+	def __init__(self, user_id, name, telephone, order_id):
 		self.user_id = user_id
 		self.name = name
 		self.telephone = telephone
+		self.order_id = order_id
 
 	def __repr__(self):
-		return '<Customer: user_id: %s, name: %s, telephone: %s' \
-			%(self.user_id, self.name, self.telephone)
+		return '<Customer: user_id: %s, name: %s, telephone: %s, order_id: %s' \
+			%(self.user_id, self.name, self.telephone, str(self.order_id))
 
 class Orders(db.Model):
 	__tablename__ = 'orders'
@@ -573,15 +577,16 @@ class Orders(db.Model):
 	__date = db.Column('date', db.DateTime(), default=datetime.utcnow())
 	confirmed = db.Column(db.Boolean, nullable=False)
 	online_payment = db.Column(db.Boolean, default=False)
-	customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
-	destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
+	restaurant_name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), default=None)
+
 	restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+	customer_list = db.relationship('Customer', cascade='all,delete', backref='orders')
+	destination_list = db.relationship('CustomerDestination', cascade='all,delete', backref='orders')
 	order_list = db.relationship('OrderList', cascade='all,delete', backref='orders')
 
-	def __init__(self, restaurant_id, customer_id, destination_id, online_payment):
+	def __init__(self, restaurant_id, restaurant_name, online_payment):
 		self.restaurant_id = restaurant_id
-		self.customer_id = customer_id
-		self.destination_id = destination_id
+		self.restaurant_name = restaurant_name
 		self.confirmed = False
 		self.online_payment = online_payment
 		self.__date = datetime.utcnow()
@@ -607,11 +612,11 @@ class Orders(db.Model):
 			raise ValueError('Incorrect confirmed value')
 		return value
 
-	@validates('restaurant_id')
+	'''@validates('restaurant_id')
 	def validate_restaurant_id(self, key, value):
 		if not Restaurant.query.filter_by(id=value).first():
 			raise ValueError('Incorrect restaurant_id')
-		return value
+		return value'''
 
 	@hybrid_property
 	def date(self):
