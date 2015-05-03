@@ -4,7 +4,7 @@ import os
 from app import create_app, db
 from flask.ext.script import Manager, Shell, Server
 from flask.ext.migrate import Migrate, MigrateCommand
-from app.models import Restaurant, Attributes, Cuisine, Menu, \
+from app.models import Restaurant, Attributes, Cuisine, Menu, Customer, CustomerDestination,\
 		MenuItem, Orders, OrderList, Address, Officials, Bonus, RestaurantCuisines, City
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -14,7 +14,7 @@ migrate = Migrate(app, db)
 def make_shell_context():
 	return dict(app=app, db=db, Restaurant=Restaurant, \
 			 Attributes=Attributes, Cuisine=Cuisine, Menu=Menu, MenuItem=MenuItem, \
-			Orders=Orders, OrderList=OrderList, Address=Address, \
+			Orders=Orders, OrderList=OrderList, Address=Address, Customer=Customer, CustomerDestination=CustomerDestination,\
 			Officials=Officials, Bonus=Bonus,RestaurantCuisines=RestaurantCuisines, City=City)
 
 @manager.command

@@ -84,7 +84,7 @@ function findTotal(min_payment){
 			{% for menu in menu_data['menu']['menu_items'] %}
 			{#<hr class="featurette-divider">#}
 			<div class=container align=center>
-			<div class="list-group" name="address_list">
+			<div class="list-group">
 			<div href="#" class="list-group-item">
 			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
 			    <div class="list-group-item-text">
@@ -134,6 +134,8 @@ function findTotal(min_payment){
 					Confirm	</button>
 			</div>
 			</form>
+			{% else %}
+				{#<div align=center><h4>Sorry, but this restaurant has not yet created menu!</h4></div>#}
 			{% endif %}
 		    </div>{#11111#}
 

@@ -136,7 +136,7 @@ class OrderAttributes(Form):
 class OrderExecution(Form):
 	name = StringField('Name', validators=[Required()])
 	telephone = StringField('Telephone', validators=[Regexp(TELEPHONE_FORMAT)])
-	street = StringField('Street', validators=[Optional()])
+	street = StringField('Street', validators=[Required()])
 	station = StringField('Underground Station',validators=[Optional()])
 	entrance = IntegerField('Entrance', validators=[Optional(), ])
 	floor = IntegerField('Floor', validators=[Optional()])

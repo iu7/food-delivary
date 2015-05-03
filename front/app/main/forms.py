@@ -140,7 +140,7 @@ class OrderExecution(Form):
 	station = StringField('Underground Station',validators=[Optional()])
 	entrance = IntegerField('Entrance', validators=[Optional(), ])
 	floor = IntegerField('Floor', validators=[Optional()])
-	passcode = StringField('Passcode', validators=[Optional()])
+	passcode = StringField('Passcode', validators=[Optional(), ])
 	
 
 

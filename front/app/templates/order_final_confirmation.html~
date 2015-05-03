@@ -81,7 +81,7 @@
 				{% endfor %}
 			</table>
 			<br>
-			<div align=center><b>Total: {{total}}</b></div>
+			<div align=center><b>Total: {%if total %}{{total}}{%else%}0{%endif%}</b></div>
 			<hr class="featurette-divider">
 			<div align=center><h4><i><b>Contact and address information</b></i></h4></div>
 			<hr class="featurette-divider">

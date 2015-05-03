@@ -4,7 +4,7 @@ from flask import request, jsonify
 from .. import db
 from .. exceptions import UException
 
-from .. models import Restaurant, Attributes, Cuisine, Menu, \
+from .. models import Restaurant, Attributes, Cuisine, Menu, CustomerDestination, Customer,\
 			MenuItem, Orders, OrderList, Address, Officials, Bonus, RestaurantCuisines, City
 
 @main.route('/')
@@ -32,9 +32,15 @@ def restaurant_register():
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(status='created', restaurant_id=restaurant.id, user_id=user_id), 201
 
-@main.route('/restaurant/<int:user_id>/info')
-def restaurant_info(user_id):
-	restaurant = Restaurant.query.filter_by(user_id=user_id).first()
+@main.route('/restaurant/info')
+def restaurant_info():
+	user_id = request.args.get('user_id')
+	restaurant_id = request.args.get('restaurant_id')
+	if user_id:
+		restaurant = Restaurant.query.filter_by(user_id=user_id).first()
+	elif restaurant_id:
+		restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+	else: raise UException('Incorrect request')
 	if not restaurant:
 		raise UException('Incorrect user_id')
 	return jsonify(name=restaurant.name, order_email=restaurant.email, activated=restaurant.activated,\
@@ -600,7 +606,36 @@ def restaurants_by_preferences():
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(restaurant_list=result, cuisine_list=cuisine_list)
 
-
+@main.route('/restaurant/<restaurant_id>/order/confirmation', methods=['POST'])
+def restaurant_order_confirmation(restaurant_id):
+	order_list = request.json.get('order_list')
+	price_list = request.json.get('price_list')
+	title_list = request.json.get('title_list')
+	total = request.json.get('total')
+	cdata = request.json.get('client_data')
+	user_id = request.json.get('user_id')
+	online_payment = request.json.get('online_payment')
+	if online_payment: online_payment = True
+	if not title_list or not order_list or not price_list or not cdata or not total:
+		raise UException('Incorrect request')
+	try:
+		destination = CustomerDestination(cdata['street'], cdata['station'], \
+						cdata['entrance'], cdata['passcode'],cdata['floor'])
+		customer = Customer(user_id, cdata['name'], cdata['telephone'])
+		db.session.add(destination)
+		db.session.add(customer)
+		db.session.flush()
+		order = Orders(restaurant_id, customer.id, destination.id, online_payment)
+		db.session.add(order)
+		db.session.flush()
+		for o, t, p in zip(order_list, title_list, price_list):
+			for i in range(0, int(o)):
+				db.session.add(OrderList(t, p, order.id))
+		db.session.commit()
+	except Exception as exc:
+		db.session.rollback()
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(status='created', order_id=order.id, customer_id=customer.id, destination_id=destination.id), 201
 
 
 

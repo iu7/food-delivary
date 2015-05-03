@@ -1,6 +1,6 @@
 from ConfigParser import SafeConfigParser
 settings = SafeConfigParser()
-settings.read('/home/bakit/CP/logic/settings.cfg')
+settings.read('/home/bakit/CP/food-delivery/logic/settings.cfg')
 
 cli_url = settings.get('ClientBackend', 'URL') + settings.get('ClientBackend', 'PORT')
 restr_url = settings.get('RestaurantBackend', 'URL') + settings.get('RestaurantBackend', 'PORT')
@@ -236,9 +236,9 @@ def restr_delete(restaurant_id):
 	return flag, json.loads(r.text)
 
 
-def restaurant_info(user_id):
-	api_url = restr_url + '/restaurant/' + str(user_id) + '/info'
-	r = requests.get(api_url)
+def restaurant_info(user_id=None, restaurant_id=None):
+	api_url = restr_url + '/restaurant/info'
+	r = requests.get(api_url, params={'user_id':user_id, 'restaurant_id':restaurant_id})
 	if r.status_code == 200:
 		flag = True
 	else: flag = False
@@ -357,7 +357,13 @@ def restaurants_by_preferences(data):
 	else: flag = False
 	return flag, json.loads(r.text)
 
-
+def restaurant_order_confirm(restaurant_id, data):
+	api_url = restr_url + '/restaurant/' + str(restaurant_id) + '/order/confirmation'
+	r = requests.post(api_url, data=json.dumps(data), headers=JSON_HEADER)
+	if r.status_code == 201:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)	
 
 
 

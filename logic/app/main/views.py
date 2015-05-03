@@ -54,7 +54,6 @@ def auth_login():
 def auth_session_state():
 	session_id = request.json.get('session_id')
 	user_data = request.json.get('user_data')
-	print user_data, type(user_data)
 	if not session_id:
 		raise UException('Incorrect request')
 	flag, auth_result = furls.auth_session_state(session_id)
@@ -309,9 +308,10 @@ def client_info():
 @main.route('/restaurant/info')
 def restaurant_info():
 	user_id = request.json.get('user_id')
-	if not user_id:
+	restaurant_id = request.json.get('restaurant_id')
+	if not user_id and not restaurant_id:
 		raise UException('Incorrect request')
-	flag, result = furls.restaurant_info(user_id)
+	flag, result = furls.restaurant_info(user_id, restaurant_id)
 	if flag:
 		flag, auth_result = furls.auth_user_info(user_id)
 		if flag:
@@ -520,9 +520,18 @@ def restaurants_by_preferences():
 	return jsonify(result), code
 	
 
-
-
-
+@main.route('/restaurant/order/confirmation', methods=['POST'])
+def restaurant_order_confirmation():
+	code = 400
+	if not request.json:
+		raise UException('Incorrect request')
+	else:
+		restaurant_id = request.json.get('restaurant_id')
+		if not restaurant_id: raise UException('Incorrect request')
+		flag, result = furls.restaurant_order_confirm(restaurant_id, request.json)
+		if flag: code = 201
+		else: code = result['status_code']
+	return jsonify(result), code
 
 
 

@@ -44,14 +44,14 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		     <div class="col-md-8 col-md-offset-5 centerfy">
-		        <h3 class=""><font color=#008080><b><i>Success!</i></b></font></h3>
+		     <div class="col-md-8 col-md-offset-4 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Confirmation result</i></b></font></h3>
 			
 		     </div>
 		   
 		     <div class="col-md-8 col-md-offset-2 centerfy">{#11111#}
 			<hr class="featurette-divider">
-			 {% if error_message %}
+		     {% if error_message %}
 			  <div class="bs-example">
 			    <div class="alert alert-danger alert-error">
 				<a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -59,19 +59,30 @@
 			    </div>
 			  </div>
 		     {% elif result_message %}
-			<div class="alert alert-success">
+			<div class="alert alert-warning">
   				  <a href="#" class="close" data-dismiss="alert">&times;</a>
-  				  <strong>Success!</strong> {{ result_message }}
+  				 <div align=center> <strong> OOps! </strong>{{ result_message }} <br></div>
+				  
 			</div>
-		     {% endif %}
+			<div align=center><h4><a href={{url_for('main.make_order')}}>Go to the order page!</a></h4></div>
+		     {% else %}
 			<div class="container">	
 				<div class="jumbotron">
-				<h4>Congratulations!</h4>
+				<h4><font color="green">Congratulations!</font></h4>
 				<b>You'r order is accepted. 
-				Soon operator will contact you.<b>
+				Soon operator will contact you.</b><br>
+				{%if payment%}
+					<br>
+					<br>
+					<table border=1>
+					<tr><td align=center colspan=2><b>Payment credentials</b></td></tr>
+					<tr><td align=right>Card holder name</td><td align=left>{{card_holder_name}}</td></tr>
+					<tr><td align=right>Card number</td><td align=left>{{card_number}}</td></tr>
+					</table>
+				{% endif %}
 				</div>
 			</div>
-
+		     {% endif %}
 		    </div>{#11111#}
 
 	      </div>{#container#}

@@ -3,7 +3,7 @@
 
 {% block body %}
 {{ super() }}
-<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<body background="{{ url_for('static', filename='background.jpg') }}"></body>
 <style>
 	.jumbotron {
 	    border-radius: 30px;
@@ -21,7 +21,7 @@
 	    <div class="jumbotron" style="background: #D0D0D0;">
 	      <div class="container">	
 		<div align=center><h4><b><i>Online payment center</i></b></h4></div>
-		<form method="POST" action="{{url_for('payment_online')}}" id="form">
+		<form method="POST" action="{{url_for('payment_online', redirect_uri=redirect_uri)}}" id="form">
 			{{form.hidden_tag()}}
 			<table>
 			  <tr>{{ wtf.form_field(form.card_number) }}</tr>

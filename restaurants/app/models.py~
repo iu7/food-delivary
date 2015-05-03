@@ -465,7 +465,7 @@ class MenuItem(db.Model):
 	price = db.Column(db.Float)
 	info = db.Column(db.String(RestaurantConfig.MENU_INFO_MAX))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
-	orderlist = db.relationship('OrderList', cascade='all,delete', backref='menuitem')
+	#orderlist = db.relationship('OrderList', cascade='all,delete', backref='menuitem')
 	bonuses = db.relationship('Bonus', cascade='all,delete', backref='menuitem')
 
 	def __init__(self, menu_id, title, price, info):
@@ -530,25 +530,66 @@ class Bonus(db.Model):
 		return value
 
 
+class CustomerDestination(db.Model):
+	__tablename__ = 'destinations'
+	id = db.Column(db.Integer, primary_key=True)
+	street = db.Column(db.String(256), nullable=False)
+	station = db.Column(db.String(256))
+	entrance = db.Column(db.String(16))
+	passcode = db.Column(db.String(32))
+	floor = db.Column(db.Integer)
+
+	def __init__(self, street, station, entrance, passcode, floor):
+		self.street = street
+		self.station = station
+		self.entrance = entrance
+		self.passcode = passcode
+		if floor: self.floor = int(floor)
+
+
+	def __repr__(self):
+		return '<CustomerDestionation: street: %s, station: %s, entrance: %s, passcode: %s, floor: %s' %\
+				(str(self.street),str(self.station),str(self.entrance),str(self.passcode),str(self.floor))
+
+class Customer(db.Model):
+	__tablename__ = 'customers'
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer)
+	name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), nullable=False)
+	telephone = db.Column(db.String(RestaurantConfig.TEL_LEN), nullable=False)
+	
+	def __init__(self, user_id, name, telephone):
+		self.user_id = user_id
+		self.name = name
+		self.telephone = telephone
+
+	def __repr__(self):
+		return '<Customer: user_id: %s, name: %s, telephone: %s' \
+			%(self.user_id, self.name, self.telephone)
+
 class Orders(db.Model):
 	__tablename__ = 'orders'
 	id = db.Column(db.Integer, primary_key=True)
 	__date = db.Column('date', db.DateTime(), default=datetime.utcnow())
-	user_id = db.Column(db.Integer)
 	confirmed = db.Column(db.Boolean, nullable=False)
+	online_payment = db.Column(db.Boolean, default=False)
+	customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+	destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
 	restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
 	order_list = db.relationship('OrderList', cascade='all,delete', backref='orders')
 
-	def __init__(self, user_id, restaurant_id):
-		self.user_id = user_id
+	def __init__(self, restaurant_id, customer_id, destination_id, online_payment):
 		self.restaurant_id = restaurant_id
+		self.customer_id = customer_id
+		self.destination_id = destination_id
 		self.confirmed = False
+		self.online_payment = online_payment
 		self.__date = datetime.utcnow()
 
 	def __repr__(self):
-		return '<Orders: id: %s, user_id: %s, restaurant_id: %s, date: %s, confirmed: %s' \
-			% (str(self.id), str(self.user_id), str(self.restaurant_id),\
-				self.date.strftime(RestaurantConfig.DTIME_FORMAT), str(self.confirmed))
+		return '<Orders: id: %s, restaurant_id: %s, date: %s, confirmed: %s, online_payment: %s' \
+			% (str(self.id), str(self.restaurant_id),\
+				self.date.strftime(RestaurantConfig.DTIME_FORMAT), str(self.confirmed), str(self.online_payment))
 
 	def get_order(self):
 		olist = []
@@ -564,12 +605,6 @@ class Orders(db.Model):
 	def validate_confirmed(self, key, value):
 		if type(value) is not type(True):
 			raise ValueError('Incorrect confirmed value')
-		return value
-
-	@validates('user_id')
-	def validate_user_id(self, key, value):
-		if type(value) is not type(int()):
-			raise ValueError('Incorrect user_id format')
 		return value
 
 	@validates('restaurant_id')
@@ -639,11 +674,11 @@ class OrderList(db.Model):
 			raise ValueError('Incorrect price')
 		return value
 
-	@validates('order_id')
+	'''@validates('order_id')
 	def validate_order_id(self, key, value):
 		if not Orders.query.filter_by(id=value).first():
 			raise ValueError('Incorrect order_id')
-		return value
+		return value'''
 
 	def __repr__(self):
 		return '<OrderList: id: %s, title: %s, price: %s, order_id: %s' \

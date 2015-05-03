@@ -14,8 +14,8 @@ migrate = Migrate(app, db)
 def make_shell_context():
 	return dict(app=app, db=db, Restaurant=Restaurant, \
 			 Attributes=Attributes, Cuisine=Cuisine, Menu=Menu, MenuItem=MenuItem, \
-			Orders=Orders, OrderList=OrderList, Address=Address, \
-			Officials=Officials, Bonus=Bonus,RestaurantCuisines=RestaurantCuisines)
+			Orders=Orders, OrderList=OrderList, Address=Address, Customer=Customer, CustomerDestination=CustomerDestination,\
+			Officials=Officials, Bonus=Bonus,RestaurantCuisines=RestaurantCuisines, City=City)
 
 @manager.command
 def test():

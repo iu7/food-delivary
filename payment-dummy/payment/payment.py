@@ -25,11 +25,12 @@ def index():
 
 @app.route('/payment/dummy', methods=['POST', 'GET'])
 def payment_online():
+	#session_id = request.cookies.get('session_id')
 	form = CardData()
 	if form.validate_on_submit():
-		sleep(randint(1,4))
+		sleep(randint(2,5))
 		redirect_uri = session['redirect_uri']
-		redirect_uri += '?status=accepted&card_number=****'+\
+		redirect_uri += '?operation=payment&status=accepted&card_number=****'+\
 			str(form.data.get('card_number')[-4:])+'&card_holder_name='+str(form.data.get('card_holder_name'))
 		return redirect(redirect_uri, 302)
 	redirect_uri = request.args.get('redirect_uri')
@@ -37,7 +38,7 @@ def payment_online():
 		return jsonify(result='Incorrect request'), 400
 	else:
 		session['redirect_uri'] = redirect_uri
-	return render_template('payment.html', form=form)
+	return render_template('payment.html', form=form, redirect_uri=redirect_uri)
 
 if __name__ == '__main__':
 	app.run(debug=True, port=5050)

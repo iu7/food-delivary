@@ -1,8 +1,9 @@
 from ConfigParser import SafeConfigParser
 settings = SafeConfigParser()
-settings.read('/home/bakit/CP/front/settings.cfg')
+settings.read('/home/bakit/CP/food-delivery/front/settings.cfg')
 
 logic_url = settings.get('LogicBackend', 'URL') + settings.get('LogicBackend', 'PORT')
+payment_url = settings.get('PaymentDummy', 'URL') + settings.get('PaymentDummy', 'PORT')
 import requests
 import json
 
@@ -131,9 +132,9 @@ def restaurant_register(data):
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def restaurant_info(user_id):
+def restaurant_info(user_id=None, restaurant_id=None):
 	api_url = logic_url + '/restaurant/info'
-	r = requests.get(api_url, data=json.dumps({'user_id':user_id}),headers=JSON_HEADER)
+	r = requests.get(api_url, data=json.dumps({'user_id':user_id, 'restaurant_id':restaurant_id}),headers=JSON_HEADER)
 	if r.status_code == 200:
 		flag = True
 	else: flag = False
@@ -263,15 +264,18 @@ def restaurants_by_preferences(data, cuisines,city):
 	else: flag = False
 	return flag, json.loads(r.text)	
 
-def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, user_id=None):
-	api_url = logic_url + '/restaurant/order/confirm'
+def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, total, client_data, online_payment, user_id=None):
+	api_url = logic_url + '/restaurant/order/confirmation'
 	r = requests.post(api_url, data=json.dumps({'restaurant_id':restaurant_id, 'order_list':order_list,\
-					'price_list':price_list, 'title_list':title_list, 'user_id':user_id}), headers=JSON_HEADER)
+			'client_data':client_data,'total':total,'price_list':price_list, 'title_list':title_list, \
+				'online_payment':online_payment,'user_id':user_id}), headers=JSON_HEADER)
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)	
 
-
+def payment_redirect_url(redirect_uri):
+	return payment_url + '/payment/dummy?redirect_uri=' + redirect_uri
+	
 
 
