@@ -43,7 +43,7 @@ function findTotal(min_payment){
             tot += parseFloat(arr[i].value)*parseFloat(prr[i].value);
     }
     document.getElementById('total').value = tot;
-    if(tot <= min_payment )
+    if(tot < min_payment )
 	document.getElementById("confBtn").disabled = true;
     else
 	document.getElementById("confBtn").disabled = false;

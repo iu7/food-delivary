@@ -3,7 +3,7 @@
 
 {% block body %}
 {{ super() }}
-<body background="{{ url_for('static', filename='img/register3.jpg') }}"></body>
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
 <style>
 	.jumbotron {
 	    border-radius: 15px;
@@ -85,6 +85,11 @@
 			<td>
 				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
 					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
+				</a>
+			</td>
+			<td>
+				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
+					<buttontype="submit" class="btn btn-success" id="submit">History</button>
 				</a>
 			</td>
 			</tr>

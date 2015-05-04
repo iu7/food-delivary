@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{#{% import "bootstrap/wtf.html" as wtf %}#}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	    
+	}
+
+	td
+	{
+	    padding:0 10px 0 20px;
+	}
+	.list-group-item{
+	    border-radius: 10px;
+	    background-color:#98AFC7;
+	    width: 50%;
+	}
+	.glyphicon-plus{
+		font-size: 18px;
+		color: #3276b1;
+	}
+	.glyphicon-trash{
+		font-size: 12px;
+	}
+
+	.glyphicon-pencil{
+		font-size: 12px;
+	}
+</style>
+
+
+{% endblock body %}
+
+{%block base_content %}
+	<hr class="featurette-divider">
+
+	<div class="col-md-8 col-md-offset-2 centerfy">
+	    <div class="jumbotron" style="background: #C0C0C0;">
+	      <div class="container">
+		    <div class="col-md-8 col-md-offset-4 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Client order history</i></b></font></h3>
+		     </div>
+		     <div class="col-md-8 col-md-offset-2 centerfy">
+			<hr class="featurette-divider">
+			{#{orders}#}
+			
+				{% if orders %}
+					{% for order in orders %}
+					<div class="jumbotron" style="padding: 10px;align-items: center;background: #ACACAC;" align=center>
+						<h4>Restaurant: {{order['order']['restaurant_name']}}</h4>
+						<h5>Date: {{order['order']['date']}}</h5>
+						<div class="container">
+
+							<div align=center><h4>Menu items</h4></div>
+							<ul class="list-group">				
+								{% for item in order['order']['order_list'] %}
+								  <li class="list-group-item"><b>Title: {{item['title']}}</b>
+								<br><b>Price: {{item['price']}}</b>
+								</li>
+								{% endfor %}
+							</ul>
+							<h5>Delivery payment: {{order['order']['delivery_payment']}}</h5>
+							<h5>Points: {{order['order']['points']}}</h5><br>
+							<h4>Total: {{order['order']['total']}}</h4>
+						</div>
+					</div>
+					{% endfor %}
+					
+				{% else %}
+					<div align="center"><h4><b>You haven't made any orders yet !</b></h4></div>
+				{% endif %}
+
+		    </div>
+	     </div>
+	    </div>
+
+	</div>
+
+
+{%endblock base_content %}
+
+

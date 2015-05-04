@@ -546,6 +546,7 @@ def user_profile_delete():
 		if not auth_result['expired']:
 			flag, logout_result = furls.auth_logout(session_id)
 			flag, user_result = furls.auth_user_raw_delete(user_id)
+			client_result = restaurant_result = None
 			if auth_result['role'] == 'Client':	
 				flag, client_result = furls.cli_delete(auth_result['user_id'])
 			elif auth_result['role'] == 'Manager':

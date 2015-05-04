@@ -80,6 +80,7 @@
 					</tr>
 				{% endfor %}
 			</table>
+			<div align=center>Delivery payment: {%if delivery_payment %}{{delivery_payment}}{%else%}0{%endif%}</div>
 			<br>
 			<div align=center><b>Total: {%if total %}{{total}}{%else%}0{%endif%}</b></div>
 			<hr class="featurette-divider">
@@ -93,9 +94,11 @@
 			<div>
 			<form action="{{ url_for('main.order_confirmation_check', city=city, restaurant_id=restaurant_id, name=name) }}"
 				method='POST'>
+				{% if online_payment_poss %}
 				<div align=center>
 				<input type="checkbox" name="checkbox" value="True"> Online payment
-				</div>	
+				</div>
+				{% endif %}
 				<br>
 				<div align=center>
 				<button type="submit" class="btn btn-success" name="confirm" title="Press to confirm">Confirm order</button>

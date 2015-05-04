@@ -656,24 +656,27 @@ def order_confirmation(city, name, restaurant_id):
 		price_list = session.get('price_list') or []
 		menu_title_list = session.get('menu_title_list') or []
 		total = session.get('total')
+		session['delivery_payment'] = rattr['delivery_payment']
+		if total is not None: total = float(total) + rattr['delivery_payment']
 		session['client_data'] = form.data
 		response = make_response(render_template('order_final_confirmation.html',city=city, name=name,\
 				client_data=form.data,restaurant_id=restaurant_id, online_payment_poss=online_payment_poss,\
-				order_list=zip(order_list, price_list, menu_title_list), total=total, user=user))
+				order_list=zip(order_list, price_list, menu_title_list), total=total, user=user,\
+					delivery_payment=rattr['delivery_payment']))
 	else:
 		addresses = None
-		if not session.get('order_list'):
-			orders = request.args.getlist('order_list')
-			prices = request.args.getlist('price_list')
-			titles = request.args.getlist('menu_title_list')
-			zeros = [i for i in range(0, len(orders)) if orders[i] != '0']
-			order_list = [orders[i] for i in zeros]
-			price_list = [prices[i] for i in zeros]
-			menu_title_list = [titles[i] for i in zeros]		
-			session['order_list'] = order_list
-			session['price_list'] = price_list
-			session['menu_title_list'] = menu_title_list
-			session['total'] = request.args.get('total')
+		#if not session.get('order_list'):
+		orders = request.args.getlist('order_list')
+		prices = request.args.getlist('price_list')
+		titles = request.args.getlist('menu_title_list')
+		zeros = [i for i in range(0, len(orders)) if orders[i] != '0']
+		order_list = [orders[i] for i in zeros]
+		price_list = [prices[i] for i in zeros]
+		menu_title_list = [titles[i] for i in zeros]		
+		session['order_list'] = order_list
+		session['price_list'] = price_list
+		session['menu_title_list'] = menu_title_list
+		session['total'] = request.args.get('total')
 		if flag:
 			if auth_result['role'] == 'Client':
 				flag, addresses = furls.client_address_list(auth_result['user_id'])
@@ -710,6 +713,7 @@ def order_confirmation_check(name, city, restaurant_id):
 		price_list = session.get('price_list')
 		title_list = session.get('menu_title_list')
 		total = session.get('total')
+		delivery_payment = session.get('delivery_payment')
 		client_data = session.get('client_data')
 		if not order_list or not price_list or not title_list or not total or not client_data:
 			response = make_response(render_template('order_result.html', user=user, name=name, \
@@ -718,7 +722,7 @@ def order_confirmation_check(name, city, restaurant_id):
 			if online_payment: payment = True
 			else: payment = False
 			flag, result = furls.restaurant_order_confirm(restaurant_id, order_list, price_list,\
-						title_list, total, client_data, online_payment, user_id)
+						title_list, total, client_data, online_payment, delivery_payment, user_id)
 			if flag: 
 				if not online_payment:
 					response = make_response(render_template('order_result.html', user=user,name=name,\
@@ -742,8 +746,30 @@ def order_confirmation_check(name, city, restaurant_id):
 	return response
 
 
+@main.route('/client/<name>/profile/history')
+def client_profile_history(name):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Client':
+			flag, result = furls.restaurant_client_history(auth_result['user_id'])
+			if flag:
+				response = make_response(render_template('client_history.html', name=name, \
+					orders=result['order'], user=auth_result['user']))
+			else:
+				response = make_response(render_template('client_history.html', name=name, \
+					error_message=result['message'], user=auth_result['user']))
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
 
-###########TODO	ADD ORDER HISTORY TO CLIENT AND MANAGER
+
+
+
+
+###########TODO	ADD ORDER HISTORY TO MANAGER
 ###########TODO ADD ADMINISTARTOR PROFILE
 ###########TODO ADD EMAIL SENDING
 

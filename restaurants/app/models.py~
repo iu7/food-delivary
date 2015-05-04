@@ -24,6 +24,7 @@ class RestaurantConfig:
 	EMAIL_LEN = 64
 	INFO_LEN = 256
 	MENU_INFO_MAX = 256
+	BONUS_PERCENTS = 10.0
 
 class Restaurant(db.Model):
 	__tablename__ = 'restaurants'
@@ -540,6 +541,11 @@ class CustomerDestination(db.Model):
 	floor = db.Column(db.Integer)
 	order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
 
+
+	def get_destination(self):
+		return {'id':self.id, 'street':self.street, 'station':self.station, 'entrance':self.entrance, 'floor':self.floor,\
+					'passcode':self.passcode}
+
 	def __init__(self, street, station, entrance, passcode, floor, order_id):
 		self.street = street
 		self.station = station
@@ -556,54 +562,77 @@ class CustomerDestination(db.Model):
 class Customer(db.Model):
 	__tablename__ = 'customers'
 	id = db.Column(db.Integer, primary_key=True)
-	user_id = db.Column(db.Integer)
 	name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), nullable=False)
 	telephone = db.Column(db.String(RestaurantConfig.TEL_LEN), nullable=False)
 	order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))	
 
-	def __init__(self, user_id, name, telephone, order_id):
-		self.user_id = user_id
+	def __init__(self, name, telephone, order_id):
 		self.name = name
 		self.telephone = telephone
 		self.order_id = order_id
 
+
 	def __repr__(self):
-		return '<Customer: user_id: %s, name: %s, telephone: %s, order_id: %s' \
-			%(self.user_id, self.name, self.telephone, str(self.order_id))
+		return '<Customer: name: %s, telephone: %s, order_id: %s' \
+			%(self.name, self.telephone, str(self.order_id))
+
+	def get_customer(self):
+		return {'id':self.id, 'name':self.name, 'telephone':self.telephone}
+
 
 class Orders(db.Model):
 	__tablename__ = 'orders'
 	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer)
 	__date = db.Column('date', db.DateTime(), default=datetime.utcnow())
 	confirmed = db.Column(db.Boolean, nullable=False)
+	canceled = db.Column(db.Boolean, default=False)
+	total = db.Column(db.Float)
+	delivery_payment = db.Column(db.Float)
+	points = db.Column(db.Float)
 	online_payment = db.Column(db.Boolean, default=False)
 	restaurant_name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), default=None)
+	info = db.Column(db.String(RestaurantConfig.INFO_LEN))
 
 	restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
-	customer_list = db.relationship('Customer', cascade='all,delete', backref='orders')
-	destination_list = db.relationship('CustomerDestination', cascade='all,delete', backref='orders')
-	order_list = db.relationship('OrderList', cascade='all,delete', backref='orders')
+	customer_list = db.relationship('Customer', cascade='all,delete', backref='order')
+	destination_list = db.relationship('CustomerDestination', cascade='all,delete', backref='order')
+	order_list = db.relationship('OrderList', cascade='all,delete', backref='order')
 
-	def __init__(self, restaurant_id, restaurant_name, online_payment):
+	def __init__(self, restaurant_id, restaurant_name, online_payment, total, delivery_payment, user_id):
 		self.restaurant_id = restaurant_id
+		self.user_id = user_id
 		self.restaurant_name = restaurant_name
-		self.confirmed = False
+		self.confirmed = True
+		self.canceled = False
+		self.info = ''
+		self.delivery_payment = delivery_payment
+		self.total = float(total) + float(delivery_payment)
+		self.points = round(float(total) / RestaurantConfig.BONUS_PERCENTS, 2)
 		self.online_payment = online_payment
 		self.__date = datetime.utcnow()
 
 	def __repr__(self):
-		return '<Orders: id: %s, restaurant_id: %s, date: %s, confirmed: %s, online_payment: %s' \
+		return '<Orders: id: %s, restaurant_id: %s, date: %s, confirmed: %s, online_payment: %s, user_id: %s' \
 			% (str(self.id), str(self.restaurant_id),\
-				self.date.strftime(RestaurantConfig.DTIME_FORMAT), str(self.confirmed), str(self.online_payment))
+				self.date, str(self.confirmed), \
+				str(self.online_payment), str(self.user_id))
 
+	def get_customer(self):
+		return self.customer_list[0].get_customer()
+
+	def get_destination(self):
+		return self.destination_list[0].get_destination()
+		
 	def get_order(self):
 		olist = []
 		for order in self.order_list:
 			olist.append(order.get_order_list())
-		return {'order' : {'id' : self.id, 'user_id' : self.user_id, 'confirmed' : self.confirmed, \
-			'restaurant_id' : self.restaurant_id, \
-			'date' : self.date.strftime(RestaurantConfig.DTIME_FORMAT), \
-			'order_list' : olist} }
+		return {'order_id' : self.id, 'user_id' : self.user_id, 'confirmed' : self.confirmed, \
+			'restaurant_id' : self.restaurant_id, 'restaurant_name' : self.restaurant_name,\
+			'date' : self.date, 'canceled':self.canceled, \
+			'order_list' : olist, 'online_payment':self.online_payment,'info':self.info, \
+			'delivery_payment':self.delivery_payment,'total':self.total, 'points':self.points}
 
 
 	@validates('confirmed')
@@ -620,9 +649,9 @@ class Orders(db.Model):
 
 	@hybrid_property
 	def date(self):
-		return self.__date
+		return self.__date.strftime(RestaurantConfig.DTIME_FORMAT)
 
-	@hybrid_property
+	'''@hybrid_property
 	def payment(self):
 		result = 0
 		for order in self.order_list:
@@ -647,7 +676,7 @@ class Orders(db.Model):
 			result = 0
 		else:
 			result = self.payment / RestaurantConfig.FEES_PERCENTS
-		return result
+		return result'''
 
 class OrderList(db.Model):
 	__tablename__ = 'orderlist'
@@ -664,7 +693,7 @@ class OrderList(db.Model):
 		self.order_id = order_id
 
 	def get_order_list(self):
-		return {'order_list_item' : {'id' : self.id, 'order_id' : self.order_id, 'title': self.title, 'price':self.price}}
+		return {'id' : self.id, 'title': self.title, 'price':self.price}
 		#'menu_item' : MenuItem.query.filter_by(id=self.menu_item_id).first().get_menu_item()}}
 
 	@validates('title')

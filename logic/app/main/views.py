@@ -560,5 +560,20 @@ def user_profile_delete():
 	return jsonify(result), code
 		
 
+@main.route('/restaurant/client/history')
+def client_history():
+	user_id = request.args.get('user_id')
+	if not user_id:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_client_history(user_id)
+	if flag: code = 200
+	else:
+		code = result['status_code']
+	return jsonify(result), code
+
+
+
+
+
 
 

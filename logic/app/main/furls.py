@@ -363,8 +363,14 @@ def restaurant_order_confirm(restaurant_id, data):
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
+	print r.text
 	return flag, json.loads(r.text)	
 
-
-
+def restaurant_client_history(user_id):
+	api_url = restr_url + '/restaurant/client/history'
+	r = requests.get(api_url, params={'user_id':user_id})
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
 
