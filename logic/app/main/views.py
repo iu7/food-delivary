@@ -572,6 +572,32 @@ def client_history():
 	return jsonify(result), code
 
 
+@main.route('/restaurant/history')
+def restaurant_history():
+	data = request.json.get('data')
+	if not data:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_history(data)
+	if flag: code = 200
+	else: code = result['status_code']
+	return jsonify(result), code
+
+
+@main.route('/restaurant/order/status/change', methods=['PUT'])
+def restaurant_order_status_change():
+	status_type = request.json.get('status_type')
+	order_id = request.json.get('order_id')
+	restaurant_id = request.json.get('restaurant_id')
+	if not status_type or not order_id or not restaurant_id:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_order_status_change(restaurant_id, order_id, status_type)
+	if flag: code = 200
+	else: code = result['status_code']
+	return jsonify(result), code
+
+
+
+
 
 
 

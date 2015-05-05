@@ -622,7 +622,6 @@ def restaurant_order_confirmation(restaurant_id):
 	user_id = request.json.get('user_id')
 	online_payment = request.json.get('online_payment')
 	delivery_payment = request.json.get('delivery_payment')
-	print delivery_payment
 	if online_payment: online_payment = True
 	if not title_list or not order_list or not price_list or not cdata or not total:
 		raise UException('Incorrect request')
@@ -661,12 +660,38 @@ def client_history():
 	
 
 
+@main.route('/restaurant/history')
+def restaurant_history():
+	restaurant_id = request.json.get('restaurant_id')
+	confirmed = request.json.get('confirmed')
+	canceled = request.json.get('canceled')	
+	if not restaurant_id:
+		raise UException('Incorrect request')
+	restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+	if not restaurant_id:
+		raise UException('Incorrect restaurant_id')
+	return jsonify(orders=restaurant.get_order_list(confirmed, canceled))
 
-
-
-
-
-
+@main.route('/restaurant/<int:restaurant_id>/order/<int:order_id>/status/change', methods=['PUT'])
+def restaurant_order_status_change(restaurant_id, order_id):
+	status_type = request.args.get('status_type')
+	if not status_type and status_type != 'canceled' and status_type != 'confirmed':
+		raise UException('Incorrect request')
+	order = Orders.query.filter_by(id=order_id).first()
+	if not order or order.restaurant_id != restaurant_id:
+		raise UException('Incorrect request')
+	try:
+		value = None
+		if status_type == 'confirmed':
+			order.confirmed = not order.confirmed
+			value = order.confirmed
+		elif status_type == 'canceled':
+			order.canceled = not order.canceled
+			value = order.canceled
+		db.session.commit()
+	except Exception as exc:
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(status_type=status_type, value=value)
 
 
 

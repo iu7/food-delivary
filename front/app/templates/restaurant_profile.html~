@@ -50,7 +50,7 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		    <div class="col-md-8 col-md-offset-2 centerfy">
+		    <div class="col-md-8 col-md-offset-3 centerfy">
 		        <h3 class=""><font color=#008080><b><i>Restaurant general information</i></b></font></h3>
 		    </div>
 
@@ -91,13 +91,18 @@
 					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
 				</a>
 			</td>
+			<td>
+				<a href="{{url_for('main.restaurant_profile_history', name=user['name'])}}">
+					<button type="submit" class="btn btn-success" id="submit">Orders</button>
+				</a>
+			</td>
 			</tr>
 			
 			</table>
 
 			<br>
 			<div class="col-md-8 col-md-offset-0 centerfy">
-		          <h3 class=""><font color=#008080><b><u><i>Additional</i></u></b></font></h3><br>
+		          <h3 class=""><font color=#008080><b><i>Additional</i></b></font></h3><br>
 		   	 </div>
 
 			<table frame="below">

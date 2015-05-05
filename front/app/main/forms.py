@@ -143,5 +143,13 @@ class OrderExecution(Form):
 	passcode = StringField('Passcode', validators=[Optional(), ])
 	
 
+class HistoryType(Form):
+	status = SelectField('Order status type', coerce=unicode, default=None, choices=[('all', 'All'), ('confirmed', 'Confirmed'),\
+				('not confirmed', 'Not confirmed'), ('canceled', 'Canceled')])
+
+
+
+
+
 
 

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+{{ super() }}
+<body background="{{ url_for('static', filename='img/background.jpg') }}"></body>
+<style>
+	.jumbotron {
+	    border-radius: 15px;
+	}
+
+	td
+	{
+	    padding:2px 20px 2px 10px;
+	}
+	.glyphicon-star
+	{
+		font-size: 20px;
+		color: #FDD017;
+	}
+	.glyphicon-ok
+	{
+		font-size: 20px;
+		color: #4CC417;
+	}
+	.glyphicon-remove
+	{
+		font-size: 20px;
+		color: #E42217;
+	}
+
+</style>
+<script>
+$('statusSelect').change(
+    function(){
+         $(this).closest('form').trigger('submit');
+    });
+</script>
+
+{% endblock body %}
+
+{%block base_content %}
+<hr class="featurette-divider">
+<div class="col-md-8 col-md-offset-2 centerfy">
+    <div class="jumbotron" style="background: #C0C0C0;">
+      <div class="container">
+            <div class="col-md-8 col-md-offset-4 centerfy">
+                <h3 class=""><font color=#008080><b><i>Restaurant orders</i></b></font></h3>
+	     </div>
+	     <div class="col-md-8 col-md-offset-2 centerfy">
+		<hr class="featurette-divider">
+		{% if error_message %}
+			  <div class="bs-example">
+			    <div class="alert alert-danger alert-error">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Error!</strong> {{error_message}}
+			    </div>
+			  </div>
+		{% elif result_message %}
+			<div class="alert alert-success">
+  				  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  				  <strong>Success!</strong> {{ result_message }}
+			</div>
+		{% endif %}
+		<div align="center">
+		<form method="POST" action="{{url_for('main.restaurant_profile_history', name=user['name'])}}" id="form">
+			{{ form.hidden_tag() }}
+			<div class="col-md-4 col-md-offset-4 centerfy" align=center>
+			<div class="content">
+			{{ wtf.form_field(form.status, onclick="this.form.submit()") }}
+			</div></div>
+		</form>
+		</div>
+		{#{orders}#}
+		<br><br><br><br>
+		<div>
+		{% for order in orders %}
+			<div align="center">
+			
+			<div class="jumbotron" style="padding: 20px;">
+			<div align=left>
+			{%if order['order']['canceled'] %}
+					<div title="Order is canceled" class="glyphicon glyphicon-remove"></div>
+			{%elif not order['order']['confirmed'] %}
+					<div title="Order is not confirmed" class="glyphicon glyphicon-star"></div>
+			{%elif order['order']['confirmed'] %}
+					<div title="Order is confirmed" class="glyphicon glyphicon-ok"></div>
+			{%endif%}
+			</div>
+
+
+			<form method="POST" action="{{url_for('main.restaurant_profile_history', name=user['name'])}}" id="form">
+			<h4 style="color: #E2A76F;"><b>General</b></h4>
+			<table><tr><td>Total:</td><td><b>{{ order['order']['total'] }}</b></td></tr>
+			<tr><td>Delivery payment:</td><td> <b>{{order['order']['delivery_payment']}}</b></td></tr>
+			<tr><td>Payment type:</td><td> <b>{% if order['order']['online_payment'] %}Online{%else%}Cash{%endif%}
+			</b></td></tr>
+			<tr"><td>Confirmed:</td><td> <b>{% if order['order']['confirmed'] %}Yes{%else%}No{%endif%}
+			</b></td><td><button type="submit" name="confirmed_change" value="{{order['order']['order_id']}}"
+						{%if order['order']['canceled'] %}disabled{%endif%}
+						class="btn btn-xs btn-info" id="form">Change</button><td></tr>
+			<tr><td>Canceled:</td><td> <b>{% if order['order']['canceled'] %}Yes{%else%}No{%endif%}
+			</b></td><td><button type="submit" name="canceled_change" value="{{order['order']['order_id']}}"
+					{%if not order['order']['confirmed'] %}disabled{%endif%}
+						 class="btn btn-xs btn-info" id="form">Change</button></td></tr>
+			</table>
+			</form>
+				<h4 style="color: #E2A76F;"><b>Customer</b></h4>
+				<table><tr><td>Name:</td><td><b>{{ order['customer']['name'] }}</b></td></tr>
+				<tr><td>Telephone:</td><td> <b>{{order['customer']['telephone']}}</b></td></tr></table>
+
+				<h4 style="color: #E2A76F;"><b>Address</b></h4>
+				<table><tr><td>Street:</td><td><b>{{ order['destination']['street'] }}</b></td></tr>
+				{% if order['destination']['station']%}
+					<tr><td>Station:</td><td> <b>{{order['destination']['station']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['entrance']%}
+					<tr><td>Entrance:</td><td> <b>{{order['destination']['entrance']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['floor']%}
+					<tr><td>Floor:</td><td> <b>{{order['destination']['floor']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['passcode']%}
+					<tr><td>Passcode:</td><td> <b>{{order['destination']['passcode']}}</b></td></tr>
+				{% endif %}
+				</table>
+				<br>
+
+				<div class="dropdown">
+				  <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" 						aria-expanded="true">Menu</button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="background-color:#92C7C7;">
+					<table>
+					<tr align=center><td><b>Title</b></td><td><b>Price</b></td></tr>
+					   {%for item in order['order']['order_list']%}
+						<tr>
+						    <li role="presentation"><td>{{item['title']}}</td><td>{{item['price']}}</td></li>
+						</tr>
+					   {% endfor %}  
+					</table>
+				  </ul>
+				</div>
+
+				<br>
+			</div>
+			</div>
+		{% endfor %}
+		</div>
+            </div>
+      </div>
+</div>
+
+
+{%endblock base_content %}
+
+

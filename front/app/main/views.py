@@ -3,7 +3,7 @@ from flask import render_template, session, redirect, url_for, request, make_res
 from . import main
 import requests
 from flask import current_app, abort
-from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,\
+from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,HistoryType,\
 		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, OrderExecution
 import furls
 
@@ -765,11 +765,53 @@ def client_profile_history(name):
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
+@main.route('/restaurant/<name>/profile/history', methods=['GET', 'POST'])
+def restaurant_profile_history(name):
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Manager':
+			form = HistoryType()
+			status_flag = None
+			restaurant_id = auth_result['user']['restaurant_id']
+			if request.form.get('confirmed_change'):
+				status_flag, result = furls.restaurant_order_status_change(restaurant_id, \
+								request.form.get('confirmed_change'), status_type='confirmed')
+			elif request.form.get('canceled_change'):
+				status_flag, result = furls.restaurant_order_status_change(restaurant_id, \
+								request.form.get('canceled_change'), status_type='canceled')
+			if status_flag == True:
+				response = make_response(render_template('restaurant_history.html', user=auth_result['user'],\
+							result_message='Updated', form=form))
+			elif status_flag == False:
+				response = make_response(render_template('restaurant_history.html', \
+							user=auth_result['user'],error_message=result['message'], form=form))
+			else:
+				if form.validate_on_submit():
+					restaurant_id = auth_result['user']['restaurant_id']
+					canceled = confirmed = None
+					if request.form.get('status') == 'confirmed': confirmed = True
+					elif request.form.get('status') == 'not confirmed': confirmed = False
+					elif request.form.get('status') == 'canceled': canceled = True
+					flag, result = furls.restaurant_history(restaurant_id, confirmed, canceled)
+					if flag:
+						response = make_response(render_template('restaurant_history.html', \
+							user=auth_result['user'],orders=result['orders'], form=form))
+					else:
+						response = make_response(render_template('restaurant_history.html', \
+							user=auth_result['user'],error_message=result['message'], form=form))
+				else:
+					response = make_response(render_template('restaurant_history.html', form=form, \
+											user=auth_result['user']))
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
 
 
 
 
-###########TODO	ADD ORDER HISTORY TO MANAGER
 ###########TODO ADD ADMINISTARTOR PROFILE
 ###########TODO ADD EMAIL SENDING
 

@@ -297,3 +297,24 @@ def restaurant_client_history(user_id):
 	else: flag = False
 	return flag, json.loads(r.text)
 
+def restaurant_history(restaurant_id, confirmed, canceled):
+	api_url = logic_url + '/restaurant/history'
+	r = requests.get(api_url, data=json.dumps({'data':{'restaurant_id':restaurant_id, 'canceled':canceled,'confirmed':confirmed}}),\
+								headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+def restaurant_order_status_change(restaurant_id, order_id, status_type):
+	api_url = logic_url + '/restaurant/order/status/change'
+	r = requests.put(api_url, data=json.dumps({'status_type':status_type, 'restaurant_id':restaurant_id, 'order_id':order_id}),\
+									 headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+
+

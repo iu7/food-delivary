@@ -138,10 +138,17 @@ class Restaurant(db.Model):
 			result.append(address.get_address())
 		return result
 
-	def get_order_list(self):
+	def get_order_list(self, confirmed, canceled):
 		result = []
-		for order in self.orders:
-			result.append(order.get_order())
+		if confirmed == None and canceled == None:
+			for order in self.orders:
+				result.append({'order': order.get_order(), 'customer':order.get_customer(), \
+						'destination': order.get_destination()})
+		else:
+			for order in self.orders:
+				if order.confirmed == confirmed or order.canceled == canceled:
+					result.append({'order': order.get_order(), 'customer':order.get_customer(), \
+							'destination': order.get_destination()})
 		return result
 
 	def get_officials_list(self):
@@ -603,7 +610,7 @@ class Orders(db.Model):
 		self.restaurant_id = restaurant_id
 		self.user_id = user_id
 		self.restaurant_name = restaurant_name
-		self.confirmed = True#TODO change to False
+		self.confirmed = False
 		self.canceled = False
 		self.info = ''
 		self.delivery_payment = delivery_payment

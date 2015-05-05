@@ -264,11 +264,13 @@ def restaurants_by_preferences(data, cuisines,city):
 	else: flag = False
 	return flag, json.loads(r.text)	
 
-def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, total, client_data, online_payment, user_id=None):
+def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, total, client_data, \
+						online_payment, delivery_payment, user_id=None):
 	api_url = logic_url + '/restaurant/order/confirmation'
 	r = requests.post(api_url, data=json.dumps({'restaurant_id':restaurant_id, 'order_list':order_list,\
 			'client_data':client_data,'total':total,'price_list':price_list, 'title_list':title_list, \
-				'online_payment':online_payment,'user_id':user_id}), headers=JSON_HEADER)
+				'online_payment':online_payment,'user_id':user_id, 'delivery_payment':delivery_payment}),\
+							headers=JSON_HEADER)
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
@@ -294,4 +296,18 @@ def restaurant_client_history(user_id):
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
+
+def restaurant_history(restaurant_id, confirmed, canceled):
+	api_url = logic_url + '/restaurant/history'
+	r = requests.get(api_url, data=json.dumps({'data':{'restaurant_id':restaurant_id, 'canceled':canceled,'confirmed':confirmed}}),\
+								headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+
+
+
 
