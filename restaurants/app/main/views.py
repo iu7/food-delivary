@@ -640,10 +640,11 @@ def restaurant_order_confirmation(restaurant_id):
 			for i in range(0, int(o)):
 				db.session.add(OrderList(t, p, order.id))
 		db.session.commit()
+		points = order.points
 	except Exception as exc:
 		db.session.rollback()
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
-	return jsonify(status='created', order_id=order.id, customer_id=customer.id, destination_id=destination.id), 201
+	return jsonify(status='created', order_id=order.id, customer_id=customer.id, destination_id=destination.id,points=points), 201
 
 
 @main.route('/restaurant/client/history')
@@ -695,9 +696,20 @@ def restaurant_order_status_change(restaurant_id, order_id):
 
 @main.route('/restaurant/list')
 def restaurant_list():
-	return jsonify(restaurant_list=Restaurant.get_restaurant_list())
+	activated = request.json.get('activated')
+	return jsonify(restaurant_list=Restaurant.get_restaurant_list(activated))
 
-
+@main.route('/restaurant/<int:restaurant_id>/activated/change')
+def restaurant_activated(restaurant_id):
+	restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+	if not restaurant:
+		raise UException('Incorrect request')
+	try:
+		restaurant.activated = not restaurant.activated
+		db.session.commit()
+	except Exception as exc:
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(status='changed', restaurant_id=restaurant.id, activated=restaurant.activated)
 
 
 

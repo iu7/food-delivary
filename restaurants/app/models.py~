@@ -52,9 +52,8 @@ class Restaurant(db.Model):
 	@staticmethod
 	def get_restaurant_by_preferences(min_payment, online_payment, opened, delivery_time, city, cuisines):
 		result = []
-		restaurant_list = Restaurant.query.all()
+		restaurant_list = Restaurant.query.filter_by(activated=True).all()
 		for restaurant in restaurant_list:
-			#TODO if not restaurant.activated: continue
 			if restaurant.address[0].city != city: continue
 			#print city, cuisines
 			if not cuisines: flag = True
@@ -84,14 +83,19 @@ class Restaurant(db.Model):
 
 
 	@staticmethod
-	def get_restaurant_list():
-		restaurants = Restaurant.query.all()
+	def get_restaurant_list(activated):
+		if activated is None:
+			restaurants = Restaurant.query.all()
+		else:
+			restaurants = Restaurant.query.filter_by(activated=activated).all()
 		result = []
 		for restaurant in restaurants:
 			attr = restaurant.attributes[0]
-			result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
-					'telephone':restaurant.telephone, 'email':restaurant.email,\
-					'attributes' : attr.get_attributes(), 'cuisines':restaurant.get_cuisines()})
+			officials = restaurant.officials[0]
+			result.append({'restaurant_id':restaurant.id, 'name':restaurant.name, 'user_id':restaurant.user_id,\
+					'telephone':restaurant.telephone, 'order_email':restaurant.email,\
+					'attributes' : attr.get_attributes(), 'cuisines':restaurant.get_cuisines(),\
+					'officials':officials.get_officials(), 'activated':restaurant.activated})
 		return result
 
 

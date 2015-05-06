@@ -145,10 +145,11 @@ class OrderExecution(Form):
 
 class HistoryType(Form):
 	status = SelectField('Order status type', coerce=unicode, default=None, choices=[('all', 'All'), ('confirmed', 'Confirmed'),\
-				('not confirmed', 'Not confirmed'),('canceled', 'Canceled')])
+				('not confirmed', 'Not confirmed'), ('canceled', 'Canceled')])
 
 
-
+class RestaurantStatus(Form):
+	status = SelectField('Activation status', coerce=unicode, chaices=[('activated', 'Activated'), ('not activated', 'Not activated')])
 
 
 

@@ -148,7 +148,8 @@ class HistoryType(Form):
 				('not confirmed', 'Not confirmed'), ('canceled', 'Canceled')])
 
 
-
+class RestaurantStatus(Form):
+	status = SelectField('Activation status', coerce=unicode, choices=[('activated', 'Activated'), ('not activated', 'Not activated')])
 
 
 

@@ -4,7 +4,7 @@ from . import main
 import requests
 from flask import current_app, abort
 from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,HistoryType,\
-		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, OrderExecution
+		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, OrderExecution, RestaurantStatus
 import furls
 
 #TODO ADMIN
@@ -814,7 +814,6 @@ def restaurant_profile_history(name):
 	return response
 
 
-#TODO ADMIN PROFILE CONTINUE, CHECK ORDERS IF ALL CLIENT DELETED AND ADMIN PROFILE CLIENT
 @main.route('/administration/clients')
 def administration_clients():
 	response = make_response(render_template('404.html'))
@@ -830,10 +829,11 @@ def administration_clients():
 				number = len(client_list)
 				response = make_response(render_template('admin_clients.html',user=auth_result['user'],\
 						client_list=client_list, number=number ))
+	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
 
-@main.route('/administration/restaurants')
+@main.route('/administration/restaurants', methods=['GET', 'POST'])
 def administration_restaurants():
 	response = make_response(render_template('404.html'))
 	session_id = request.cookies.get('session_id')
@@ -842,8 +842,24 @@ def administration_restaurants():
 	if session_id:
 		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
 		if flag and auth_result['role'] == 'Administrator':
-			response = make_response(render_template('admin_restaurants.html',user=auth_result['user']))
+			form = RestaurantStatus()
+			if request.form.get('activated'):
+				flag, result = furls.restaurant_activated_change(request.form.get('activated'))
+				response = make_response(render_template('admin_restaurants.html', user=auth_result['user'],form=form))
+			elif form.validate_on_submit():
+				if request.form.get('status') == 'activated': activated = True
+				else: activated = False
+				flag, result = furls.users_by_role('Manager', activated)
+				if flag:
+					restaurant_list = result['result']['restaurant_list']
+					number = len(restaurant_list)
+					response = make_response(render_template('admin_restaurants.html', user=auth_result['user'],\
+							restaurant_list=restaurant_list, form=form, number=number))
+			else:
+				response = make_response(render_template('admin_restaurants.html', user=auth_result['user'],form=form))
+	if session_id: response.set_cookie('session_id', session_id)
 	return response
+
 
 @main.route('/administration/orders')
 def administration_orders():

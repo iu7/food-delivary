@@ -50,7 +50,7 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		    <div class="col-md-8 col-md-offset-2 centerfy">
+		    <div class="col-md-8 col-md-offset-3 centerfy">
 		        <h3 class=""><font color=#008080><b><i>Restaurant general information</i></b></font></h3>
 		    </div>
 
@@ -75,7 +75,7 @@
 				</tr>
 				<tr>
 					<td align=right><h4>activated</h4></td>
-					<td><h4><font color="black"><b>{{ user['activated'] }}</b></font></h4></td>
+					<td><h4><font color="black">{% if user['activated'] %}<b>Yes</b>{%else%}<b>No</b> <h5>(Contact the administrator)</h5>{% endif %}</font></h4></td>
 				</tr>
 			</table>
 			<hr class="featurette-divider">

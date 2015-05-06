@@ -363,7 +363,6 @@ def restaurant_order_confirm(restaurant_id, data):
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
-	print r.text
 	return flag, json.loads(r.text)	
 
 def restaurant_client_history(user_id):
@@ -409,8 +408,17 @@ def client_list():
 	else: flag = False
 	return flag, json.loads(r.text)
 
-def restaurant_list():
+def restaurant_list(activated):
 	api_url = restr_url + '/restaurant/list'
+	r = requests.get(api_url,data=json.dumps({'activated':activated}), headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+def restaurant_activated_change(restaurant_id):
+	api_url = restr_url + '/restaurant/'+str(restaurant_id)+'/activated/change'
 	r = requests.get(api_url)
 	if r.status_code == 200:
 		flag = True
@@ -418,9 +426,11 @@ def restaurant_list():
 	return flag, json.loads(r.text)
 
 
-
-
-
-
-
+def client_add_points(user_id, points):
+	api_url = cli_url + '/client/add/points'
+	r = requests.put(api_url, data=json.dumps({'user_id':user_id, 'points':points}), headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
 

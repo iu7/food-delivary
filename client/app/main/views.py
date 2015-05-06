@@ -181,7 +181,22 @@ def client_list():
 	return jsonify(clients=Client.get_clients())
 
 
-
+@main.route('/client/add/points', methods=['PUT'])
+def client_add_points():
+	user_id = request.json.get('user_id')
+	points = request.json.get('points')
+	if not user_id or not points:
+		raise UException('Inocrrect request')
+	client = Client.query.filter_by(user_id=user_id).first()
+	if not client:
+		raise UException('Incorrect request')
+	try:
+		client.points += float(points)
+		db.session.commit()
+	except Exception, msg:
+		db.session.rollback()
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(points=client.points)
 
 
 

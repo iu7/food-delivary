@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{#{% import "bootstrap/wtf.html" as wtf %}#}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block body %}
 {{ super() }}
@@ -41,40 +41,70 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		    <div class="col-md-8 col-md-offset-5 centerfy">
-		        <h3 class=""><font color=#008080><b><i>Restaurants</i></b></font></h3>
+		    <div class="col-md-8 col-md-offset-4 centerfy">
+		        <h3 class=""><font color=#008080><b><i>Restaurants ({%if number%}{{number}}{%else%}0{%endif%})</i></b></font></h3>
 		     </div>
-		     <div class="col-md-6 col-md-offset-3 centerfy">
+		     <div class="col-md-8 col-md-offset-2 centerfy">
 			<hr class="featurette-divider">
-			{#{{ user}}#}
-			
-		
+			{#{restaurant_list}#}
+			<div align="center">
+				<form method="POST" action="{{ url_for('main.administration_restaurants') }}" id="form">
+					{{ form.hidden_tag() }}
+					<div class="col-md-4 col-md-offset-4 centerfy" align=center>
+					<div class="content">
+					{{ wtf.form_field(form.status, onclick="this.form.submit()") }}
+					</div></div>
+				</form>
+			</div><br><br><br><br>
 
-			{#<table>
-			<hr class="featurette-divider">
-			<tr>
-			<td>
-				<a href="{{url_for('main.user_data_edit',name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Profile Edit</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.user_password_change', name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.client_profile_history', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">History</button>
-				</a>
-			</td>
-			</tr>
+			<div>
+			{% for restaurant in restaurant_list%}
+			<div class="jumbotron" align=center style="background-color:#E3E4FA;">
+			<h4 >General information</h4>
+			<table>
+				<tr><td>Name</td><td><b>{{restaurant['name']}}</b></td></tr>
+				<tr><td>Telephone</td><td><b>{{restaurant['telephone']}}</b></td></tr>
+				<tr><td>Email</td><td><b>{{restaurant['email']}}</b></td></tr>
+				<tr><td>Email for orders</td><td><b>{{restaurant['email']}}</b></td></tr>
+			</table><br>
+			<h4 >Officials information</h4>
+			<table>
+				<tr><td>Name</td><td><b>{{restaurant['officials']['officials']['name']}}</b></td></tr>
+				<tr><td>Telephone</td><td><b>{{restaurant['officials']['officials']['telephone']}}</b></td></tr>
+				<tr><td>Email</td><td><b>{{restaurant['officials']['officials']['email']}}</b></td></tr>
+			</table>
+			{#<h4 >Attributes</h4>
+			<table>
+				<tr><td>Online payment</td><td><b>{% if restaurant['attributes']['online_payment'] %}Yes
+									{%else%}No{%endif%}</b></td></tr>
+				<tr><td>Minimal payment</td><td><b>{{restaurant['attributes']['min_payment']}}</b></td></tr>
+				<tr><td>Delivery payment</td><td><b> {{restaurant['attributes']['delivery_payment']}}</b></td></tr>
+				<tr><td>Delivery time</td><td><b> {{restaurant['attributes']['delivery_time']}}</b></td></tr>
+				<tr><td>Opening times</td><td><b>{{restaurant['attributes']['open_from']}} -  
+							{{restaurant['attributes']['open_to']}}</b></td></tr>
+				<tr><td>Working days</td><td><b>
+					{% if restaurant['attributes']['wdays'][0] %}mon., {% endif %}
+					{% if restaurant['attributes']['wdays'][1] %}tue., {% endif %}
+					{% if restaurant['attributes']['wdays'][2] %}wed., {% endif %}
+					{% if restaurant['attributes']['wdays'][3] %}thu., {% endif %}
+					{% if restaurant['attributes']['wdays'][4] %}fri., {% endif %}
+					{% if restaurant['attributes']['wdays'][5] %}sat., {% endif %}
+					{% if restaurant['attributes']['wdays'][6] %}sun., {% endif %}
+				</b></td></tr>
 			</table>#}
+			<br>
+			<form action="{{ url_for('main.administration_restaurants') }}" method="POST">
+			    <table><tr><td>Activated</td><td>{% if restaurant['activated'] %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</td>
+				<td><button type="submit" class="btn btn-primary btn-xs" name="activated" 
+						value="{{restaurant['restaurant_id']}}">Change</button></td>
+	
+				</tr></table>
+			</form>
+			</div>
+			{% endfor %}
+			</div>
+
+
 		    </div>
 	     </div>
 	    </div>

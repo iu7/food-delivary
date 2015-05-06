@@ -316,14 +316,20 @@ def restaurant_order_status_change(restaurant_id, order_id, status_type):
 	return flag, json.loads(r.text)
 
 
-def users_by_role(role_name):
+def users_by_role(role_name, activated=None):
 	api_url = logic_url + '/user/list/' + role_name
-	r = requests.get(api_url)
+	r = requests.get(api_url, data=json.dumps({'activated':activated}), headers=JSON_HEADER)
 	if r.status_code == 200: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
 
-
+def restaurant_activated_change(restaurant_id):
+	api_url = logic_url + '/restaurant/'+str(restaurant_id)+'/activated/change'
+	r = requests.get(api_url)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
 
 
 

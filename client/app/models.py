@@ -26,7 +26,7 @@ class Client(db.Model):
 		for client in clients:
 			if client:
 				result.append({'user_id':client.user_id, 'name':client.name, 'telephone':client.telephone,\
-					'member_since':client.member_since})
+					'member_since':client.member_since, 'points':client.points})
 		return result
 
 	def __init__(self, name, telephone, user_id):

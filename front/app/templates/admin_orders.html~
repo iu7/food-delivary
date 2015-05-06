@@ -42,7 +42,7 @@
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
 		    <div class="col-md-8 col-md-offset-5 centerfy">
-		        <h3 class=""><font color=#008080><b><i>Restaurants</i></b></font></h3>
+		        <h3 class=""><font color=#008080><b><i>Orders</i></b></font></h3>
 		     </div>
 		     <div class="col-md-6 col-md-offset-3 centerfy">
 			<hr class="featurette-divider">
@@ -50,32 +50,7 @@
 			
 		
 
-			{#<table>
-			<hr class="featurette-divider">
-			<tr>
-			<td>
-				<a href="{{url_for('main.user_data_edit',name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Profile Edit</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.user_password_change', name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.client_profile_history', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">History</button>
-				</a>
-			</td>
-			</tr>
-			</table>#}
-		    </div>
+					    </div>
 	     </div>
 	    </div>
 
