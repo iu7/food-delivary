@@ -6,6 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask_redis import Redis
 from redis_collections import Dict
 from config import config
+from app.models import User
 
 bootstrap = Bootstrap()
 mail = Mail()

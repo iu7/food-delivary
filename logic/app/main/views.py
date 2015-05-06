@@ -66,6 +66,8 @@ def auth_session_state():
 					flag, user_result = furls.cli_info(result['user_id'])
 				elif result['role'] == 'Manager':
 					flag, user_result = furls.restaurant_info(result['user_id'])
+				elif result['role'] == 'Administrator':
+					user_result = {'name' : 'Administrator'}
 				if flag:
 					#user_result['email'] == result['email']
 					result['user'] = user_result
@@ -304,6 +306,30 @@ def client_info():
 		code = result['status_code']
 	return jsonify(result), code
 
+@main.route('/user/list/<role>')
+def user_list(role):
+	if not role:
+		raise UException('Incorrect request')
+	flag, users = furls.auth_users_by_role(role)
+	if flag:
+		#user_id_list = users['user_id_list']
+		if role == 'Client':
+			flag, result = furls.client_list()
+			for client in result['clients']:
+				for user in users['users']:
+					if user['user_id'] == client['user_id']:
+							client['email'] = user['email']
+		elif role == 'Manager':
+			flag, result = furls.restaurant_list()
+		else:
+			raise UException('Incorrect request')
+		code=  200
+	else:
+		result = users = []
+		code = result['status_code']
+	return jsonify(result=result), code
+
+
 
 @main.route('/restaurant/info')
 def restaurant_info():
@@ -323,6 +349,9 @@ def restaurant_info():
 	else:
 		code = result['status_code']
 	return jsonify(result), code
+
+
+
 
 @main.route('/restaurant/data/update', methods=['PUT'])
 def restaurant_data_update():

@@ -83,6 +83,18 @@ class Restaurant(db.Model):
 		return result, cuisines
 
 
+	@staticmethod
+	def get_restaurant_list():
+		restaurants = Restaurant.query.all()
+		result = []
+		for restaurant in restaurants:
+			attr = restaurant.attributes[0]
+			result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
+					'telephone':restaurant.telephone, 'email':restaurant.email,\
+					'attributes' : attr.get_attributes(), 'cuisines':restaurant.get_cuisines()})
+		return result
+
+
 	def is_opened(self):
 		attr = self.attributes[0]
 		days = [attr.monday,attr.tuesday,attr.wednesday,attr.thursday,attr.friday,attr.saturday,attr.sunday]

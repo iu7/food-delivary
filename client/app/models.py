@@ -18,6 +18,17 @@ class Client(db.Model):
 	address = db.relationship('Address', cascade='all,delete', backref='client')
 	history = db.relationship('History', cascade='all,delete', backref='client')
 
+
+	@staticmethod
+	def get_clients():
+		clients = Client.query.all()
+		result = []
+		for client in clients:
+			if client:
+				result.append({'user_id':client.user_id, 'name':client.name, 'telephone':client.telephone,\
+					'member_since':client.member_since})
+		return result
+
 	def __init__(self, name, telephone, user_id):
 		self.name = name
 		self.telephone = telephone

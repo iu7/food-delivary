@@ -24,6 +24,8 @@ def about():
 				flag, result = furls.restaurant_info(result['user_id'])
 				if flag:
 					response = make_response(render_template('about.html', user=result))
+			elif result['role'] == 'Administrator':
+				response = make_response(render_template('about.html', user={'name':'Administrator'}))
 			response.set_cookie('session_id', session_id)
 	return response
 
@@ -44,7 +46,8 @@ def index():
 				flag, result = furls.restaurant_info(result['user_id'])
 				if flag:
 					response = make_response(render_template('home.html', user=result))
-			else: response = 'Administrator'''
+			elif result['role'] == 'Administrator':
+				response = make_response(render_template('home.html', user={'name':'Administrator'}))
 			response.set_cookie('session_id', session_id)
 	return response
 
@@ -110,8 +113,8 @@ def login():
 			elif result['role'] == 'Manager':
 				flag, result = furls.restaurant_info(result['user_id'])
 				response = redirect(url_for('main.user_profile', name=result['name']))
-			else: 
-				response = 'the last is Administartor'
+			elif result['role'] == 'Administrator':		
+				response = redirect(url_for('main.user_profile', name='Administrator'))
 			response.set_cookie('session_id', session_id)
 		else:
 			response = make_response(render_template('home.html', signin_failure=True))
@@ -147,7 +150,8 @@ def user_profile(name):
 				flag, data = furls.restaurant_info(result['user_id'])
 				if flag:
 					response = make_response(render_template('restaurant_profile.html', user=data))
-
+			if result['role'] == 'Administrator':
+				response = make_response(render_template('admin_profile.html', user={'name':'Administrator'}))
 			response.set_cookie(result['session_id'])	
 	return response
 
@@ -810,6 +814,48 @@ def restaurant_profile_history(name):
 	return response
 
 
+#TODO ADMIN PROFILE CONTINUE, CHECK ORDERS IF ALL CLIENT DELETED AND ADMIN PROFILE CLEINT
+@main.route('/administration/clients')
+def administration_clients():
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Administrator':
+			flag, client_list = furls.users_by_role('Client')
+			if flag:
+				client_list = client_list['result']['clients']
+				number = len(client_list)
+				response = make_response(render_template('admin_clients.html',user=auth_result['user'],\
+						client_list=client_list, number=number ))
+	return response
+
+
+@main.route('/administration/restaurants')
+def administration_restaurants():
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Administrator':
+			response = make_response(render_template('admin_restaurants.html',user=auth_result['user']))
+	return response
+
+@main.route('/administration/orders')
+def administration_orders():
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Administrator':
+			response = make_response(render_template('admin_orders.html',user=auth_result['user']))
+	return response
 
 
 
@@ -817,8 +863,6 @@ def restaurant_profile_history(name):
 
 
 
-###########TODO	ADD ORDER HISTORY TO MANAGER
-###########TODO ADD ADMINISTARTOR PROFILE
 ###########TODO ADD EMAIL SENDING
 
 

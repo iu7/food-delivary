@@ -6,7 +6,7 @@ from .. exceptions import UException
 from .. models import User
 from uuid import uuid4
 
-#SESSION_LIFETIME = timedelta(days=1)
+SESSION_LIFETIME = timedelta(days=1)
 
 def create_session_id():
 	return unicode(uuid4())
@@ -163,4 +163,21 @@ def user_raw_delete():
 	except:
 		raise UException(message='Unexpected server exception', status_code=500)
 	return jsonify(status='deleted')
+
+
+@main.route('/user/list/<role>')
+def user_list(role):
+	if not role:
+		raise UException('Incorrect request')
+	users = User.get_users(role)
+	return jsonify(users=users)
+
+
+
+
+
+
+
+
+
 

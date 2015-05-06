@@ -176,3 +176,13 @@ def get_client_addresses():
 		UException(message=msg)
 	return jsonify(address_list=data)
 
+@main.route('/client/list')
+def client_list():
+	return jsonify(clients=Client.get_clients())
+
+
+
+
+
+
+

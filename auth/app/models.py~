@@ -30,7 +30,7 @@ class Role(db.Model):
 		roles = {
 			'Client' : Permission.MAKE_ORDER | Permission.SAVE_POINTS,
 			'Manager' : Permission.CREATE_MENU | Permission.CONFIRM_ORDER,
-			'Administartor' : Permission.ADMINISTER
+			'Administrator' : Permission.ADMINISTER
 		}
 		for r in roles:
 			role = Role.query.filter_by(name=r).first()
@@ -39,6 +39,13 @@ class Role(db.Model):
 			role.permissions = roles[r]
 			db.session.add(role)
 		db.session.commit()
+
+	@staticmethod
+	def get_admin_id():
+		admin = Role.query.filter_by(name='Administrator').first()
+		if admin: result = admin.id
+		else: result = None
+		return result
 
 
 	def __repr__(self):
@@ -53,9 +60,39 @@ class User(db.Model):
 	confirmed = db.Column(db.Boolean, nullable=False, default=False)
 
 
-	def get_role(self):
+	@staticmethod
+	def get_users(role_name):
+		result = dict()
+		role = Role.query.filter_by(name=role_name).first()
+		#user_id_list = []
+		user_list = []
+		if role:
+			users = User.query.filter_by(role_id=role.id).all()
+			for user in users:
+				user_list.append({'email':user.email, 'user_id': user.id})
+				#user_id_list.append(user.id)
+		#result['user_id_list'] = user_id_list
+		#result['user_list'] = user_list
+		return result
+
+
+	def get_role_name(self):
 		role = Role.query.filter_by(id=self.role_id).first()
 		return role.name
+
+	@staticmethod
+	def admin_init():
+		admin_id = Role.get_admin_id()
+		if admin_id:
+			if not User.query.filter_by(role_id=admin_id).first():
+				db.session.add(User('admin@m.ru', '123456', 'Administrator'))
+				db.session.commit()
+	@staticmethod
+	def admin():
+		admin_id = Role.get_admin_id()
+		admin = User.query.filter_by(role_id=admin_id).first()
+		return admin
+
 
 	@validates('email')
 	def validate_email(self, key, value):
@@ -78,7 +115,7 @@ class User(db.Model):
 		if len(value) < UserConfig.MIN_PASSW_LEN or len(value) > UserConfig.MAX_PASSW_LEN:
 			raise ValueError('Incorrect password length (minimal length = %d, maximal length = %d)'%(UserConfig.MIN_PASSW_LEN, UserConfig.MAX_PASSW_LEN))
 		return generate_password_hash(value)
-		
+
 
 	def __init__(self, email, password, role_name):
 		self.email = email

@@ -393,6 +393,30 @@ def restaurant_order_status_change(restaurant_id, order_id, status_type):
 	return flag, json.loads(r.text)
 
 
+def auth_users_by_role(role_name):
+	api_url = auth_url + '/user/list/' + role_name
+	r = requests.get(api_url)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+def client_list():
+	api_url = cli_url + '/client/list'
+	r = requests.get(api_url)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+def restaurant_list():
+	api_url = restr_url + '/restaurant/list'
+	r = requests.get(api_url)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
 
 
 

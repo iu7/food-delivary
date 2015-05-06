@@ -693,5 +693,12 @@ def restaurant_order_status_change(restaurant_id, order_id):
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(status_type=status_type, value=value)
 
+@main.route('/restaurant/list')
+def restaurant_list():
+	return jsonify(restaurant_list=Restaurant.get_restaurant_list())
+
+
+
+
 
 

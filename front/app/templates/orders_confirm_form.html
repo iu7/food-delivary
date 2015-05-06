@@ -123,7 +123,7 @@ function radioCheck(flag, street, flr, entrance, passcode, station){
 				{{ wtf.form_field(form.station) }}
 			<table><tr>
 				<td>{{ wtf.form_field(form.entrance) }}</td>
-				<td>{{ wtf.form_field(form.floor) }}</td>
+				<td>{{ wtf.form_field(form.floor, type="number", min=0) }}</td>
 				<td>{{ wtf.form_field(form.passcode) }}</td>
 			</tr></table>
 

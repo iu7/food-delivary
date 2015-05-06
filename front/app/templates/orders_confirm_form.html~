@@ -117,12 +117,13 @@ function radioCheck(flag, street, flr, entrance, passcode, station){
 			    </ul>
 			</div>
 			{# <br><br><h4><input type="radio" checked name="address_check" onchange="radioCheck(false, '', '', '', '', '');">New address</h4>#}
+			<br><br>
 			{% endif %}
 				{{ wtf.form_field(form.street) }}
 				{{ wtf.form_field(form.station) }}
 			<table><tr>
 				<td>{{ wtf.form_field(form.entrance) }}</td>
-				<td>{{ wtf.form_field(form.floor) }}</td>
+				<td>{{ wtf.form_field(form.floor, type="number", min=0) }}</td>
 				<td>{{ wtf.form_field(form.passcode) }}</td>
 			</tr></table>
 

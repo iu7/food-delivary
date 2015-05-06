@@ -164,3 +164,14 @@ def user_raw_delete():
 		raise UException(message='Unexpected server exception', status_code=500)
 	return jsonify(status='deleted')
 
+
+@main.route('/user/list/<role>')
+def user_list(role):
+	if not role:
+		raise UException('Incorrect request')
+	users = User.get_users(role)
+	return jsonify(users=users)
+
+
+
+
