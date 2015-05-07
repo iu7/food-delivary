@@ -41,7 +41,7 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		    <div class="col-md-8 col-md-offset-5 centerfy">
+		    <div class="col-md-8 col-md-offset-4 centerfy">
 		        <h3 class=""><font color=#008080><b><i>Restaurants ({%if number%}{{number}}{%else%}0{%endif%})</i></b></font></h3>
 		     </div>
 		     <div class="col-md-8 col-md-offset-2 centerfy">
@@ -95,11 +95,17 @@
 			<br>
 			<form action="{{ url_for('main.administration_restaurants') }}" method="POST">
 			    <table><tr><td>Activated</td><td>{% if restaurant['activated'] %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</td>
-				<td><button type="submit" class="btn btn-primary btn-xs" name="activated" 
+				<td><button type="submit" class="btn btn-success btn-xs" name="activated" 
 						value="{{restaurant['restaurant_id']}}">Change</button></td>
 	
 				</tr></table>
 			</form>
+			<br><br>
+			<a href=" {{url_for('main.administration_orders', restaurant_name=urestaurant['name'], 
+								restaurant_id=restaurant['restaurant_id']) }}">
+
+				<button type="submit" class="btn btn-primary btn-md">Orders</button>
+			</a>
 			</div>
 			{% endfor %}
 			</div>

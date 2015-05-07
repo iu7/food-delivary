@@ -274,7 +274,6 @@ def restaurant_order_confirm(restaurant_id, order_list, price_list, title_list, 
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
-	print r.text
 	return flag, json.loads(r.text)	
 
 def payment_redirect_url(redirect_uri):

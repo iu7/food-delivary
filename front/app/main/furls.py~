@@ -314,7 +314,6 @@ def restaurant_order_status_change(restaurant_id, order_id, status_type):
 	if r.status_code == 200:
 		flag = True
 	else: flag = False
-	print r.text
 	return flag, json.loads(r.text)
 
 

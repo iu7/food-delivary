@@ -507,7 +507,6 @@ def restaurant_menu(name):
 					menu_id = request.args.get('menu_id')
 					restaurant_id = request.args.get('restaurant_id')
 					flag, result = furls.restaurant_menu_item_create(restaurant_id, menu_id, form.data)
-					print form.data
 					if flag:
 						response = redirect(url_for('main.restaurant_menu', name=name, result_message='Created!'))
 					else:
@@ -882,8 +881,8 @@ def administration_restaurants():
 	return response
 
 
-@main.route('/administration/orders')
-def administration_orders():
+@main.route('/administration/restaurant/<restaurant_name>/orders')
+def administration_orders(restaurant_name):
 	response = make_response(render_template('404.html'))
 	session_id = request.cookies.get('session_id')
 	result_message = request.args.get('result_message')
@@ -891,11 +890,19 @@ def administration_orders():
 	if session_id:
 		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
 		if flag and auth_result['role'] == 'Administrator':
-			response = make_response(render_template('admin_orders.html',user=auth_result['user']))
+			restaurant_id = request.args.get('restaurant_id')
+			flag, result = furls.restaurant_history(restaurant_id, None, None)
+			if flag:
+				orders = result['orders']
+				number = len(orders)
+				response = make_response(render_template('admin_orders.html',user=auth_result['user'],
+					orders=orders,restaurant_name=restaurant_name, number=number))
+	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
 
 
-###########TODO ADD EMAIL SENDING
+
+
 
 

@@ -55,24 +55,16 @@ class Restaurant(db.Model):
 		restaurant_list = Restaurant.query.filter_by(activated=True).all()
 		for restaurant in restaurant_list:
 			if restaurant.address[0].city != city: continue
-			#print city, cuisines
 			if not cuisines: flag = True
 			else:
 				flag = False
-				#print 'restr_cuisines', restaurant.cuisines, 'checked', cuisines
 				for cuisine in restaurant.cuisines: flag |= str(cuisine.cuisine_id) in cuisines
 			if not flag: continue
 			attr = restaurant.attributes[0]
-			#print min_payment, online_payment, opened, delivery_time,'\nNEW_LINE_NEW_LINE\n'
-			#print attr, flag
 			flag = not min_payment or (min_payment and min_payment >= attr.min_payment)
-			#print '1', flag
 			if flag: flag = not online_payment or online_payment == attr.online_payment
-			#print '2', flag
 			if flag and opened: flag = restaurant.is_opened()			
-			#print '3', flag
 			if flag: flag = float(delivery_time) >= attr.delivery_time
-			#print '4', flag
 			if flag:
 				result.append({'restaurant_id':restaurant.id, 'name':restaurant.name,\
 					'telephone':restaurant.telephone, 'email':restaurant.email,\
@@ -646,8 +638,7 @@ class Orders(db.Model):
 
 	def __repr__(self):
 		return '<Orders: id: %s, restaurant_id: %s, date: %s, confirmed: %s, online_payment: %s, user_id: %s' \
-			% (str(self.id), str(self.restaurant_id),\
-				self.date, str(self.confirmed), \
+			% (str(self.id), str(self.restaurant_id), self.date, str(self.confirmed), \
 				str(self.online_payment), str(self.user_id))
 
 	def get_customer(self):

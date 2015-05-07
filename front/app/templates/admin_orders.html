@@ -41,16 +41,76 @@
 	<div class="col-md-8 col-md-offset-2 centerfy">
 	    <div class="jumbotron" style="background: #C0C0C0;">
 	      <div class="container">
-		    <div class="col-md-8 col-md-offset-5 centerfy">
-		        <h3 class=""><font color=#008080><b><i>Orders</i></b></font></h3>
+		    <div class="col-md-8 col-md-offset-4 centerfy">
+		        <h3 class=""><font color=#008080><b><i>{{restaurant_name}} order list ({{number}})</i></b></font></h3>
 		     </div>
-		     <div class="col-md-6 col-md-offset-3 centerfy">
+		     <div class="col-md-8 col-md-offset-2 centerfy">
 			<hr class="featurette-divider">
 			{#{{ user}}#}
+			{#{orders}#}
+			<div>
+			{% for order in orders %}
+			<div align="center">
 			
-		
+			<div class="jumbotron" style="padding: 20px;">
+			
 
-			
+			<form method="POST" action="{{url_for('main.restaurant_profile_history', name=user['name'])}}" id="form">
+			<h4 style="color: #E2A76F;"><b>General</b></h4>
+			<table><tr><td>Total:</td><td><b>{{ order['order']['total'] }}</b></td></tr>
+			<tr><td>Delivery payment:</td><td> <b>{{order['order']['delivery_payment']}}</b></td></tr>
+			<tr><td>Payment type:</td><td> <b>{% if order['order']['online_payment'] %}Online{%else%}Cash{%endif%}
+			</b></td></tr>
+			<tr"><td>Confirmed:</td><td> <b>{% if order['order']['confirmed'] %}Yes{%else%}No{%endif%}
+			{#</b></td><td><button type="submit" name="confirmed_change" value="{{order['order']['order_id']}}"
+						{%if order['order']['canceled'] %}disabled{%endif%}
+						class="btn btn-xs btn-info" id="form">Change</button><td></tr>
+			<tr><td>Canceled:</td><td> <b>{% if order['order']['canceled'] %}Yes{%else%}No{%endif%}
+			</b></td><td><button type="submit" name="canceled_change" value="{{order['order']['order_id']}}"
+					{%if not order['order']['confirmed'] %}disabled{%endif%}
+						 class="btn btn-xs btn-info" id="form">Change</button></td></tr>#}
+			</table>
+			</form>
+				<h4 style="color: #E2A76F;"><b>Customer</b></h4>
+				<table><tr><td>Name:</td><td><b>{{ order['customer']['name'] }}</b></td></tr>
+				<tr><td>Telephone:</td><td> <b>{{order['customer']['telephone']}}</b></td></tr></table>
+
+				<h4 style="color: #E2A76F;"><b>Address</b></h4>
+				<table><tr><td>Street:</td><td><b>{{ order['destination']['street'] }}</b></td></tr>
+				{% if order['destination']['station']%}
+					<tr><td>Station:</td><td> <b>{{order['destination']['station']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['entrance']%}
+					<tr><td>Entrance:</td><td> <b>{{order['destination']['entrance']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['floor']%}
+					<tr><td>Floor:</td><td> <b>{{order['destination']['floor']}}</b></td></tr>
+				{% endif %}
+				{% if order['destination']['passcode']%}
+					<tr><td>Passcode:</td><td> <b>{{order['destination']['passcode']}}</b></td></tr>
+				{% endif %}
+				</table>
+				<br>
+
+				<div class="dropdown">
+				  <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" 						aria-expanded="true">Menu</button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="background-color:#92C7C7;">
+					<table>
+					<tr align=center><td><b>Title</b></td><td><b>Price</b></td></tr>
+					   {%for item in order['order']['order_list']%}
+						<tr>
+						    <li role="presentation"><td>{{item['title']}}</td><td>{{item['price']}}</td></li>
+						</tr>
+					   {% endfor %}  
+					</table>
+				  </ul>
+				</div>
+
+				<br>
+			</div>
+			</div>
+		{% endfor %}
+			</div>
 		    </div>
 	     </div>
 	    </div>

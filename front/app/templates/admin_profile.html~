@@ -56,14 +56,14 @@
 				</div>
 			</a>
 
-			<a href="{{url_for('main.administration_restaurants')}}">
+			<a href="{{ url_for('main.administration_restaurants') }}">
 				<div class="jumbotron" style="background-color: #488AC7;">
 				<div class="container" align=center>
 					<h3><font color="white"><b>Restaurants</b></font></h3>
 				</div>
 				</div>
 			</a>
-			<a href="{{url_for('main.administration_orders')}}">
+			<a href="{{ url_for('main.administration_orders') }}">
 				<div class="jumbotron" style="background-color: #728FCE;">
 				<div class="container" align=center>
 					<h3><font color="white"><b>Orders</b></font></h3>
@@ -88,11 +88,11 @@
 					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
 				</a>
 			</td>
-			<td>
+			{#<td>
 				<a href="{{url_for('main.client_profile_history', name=user['name'])}}">
 					<buttontype="submit" class="btn btn-success" id="submit">History</button>
 				</a>
-			</td>
+			</td>#}
 			</tr>
 			</table>#}
 		    </div>
