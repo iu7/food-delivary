@@ -118,6 +118,7 @@ class MenuItemForm(Form):
 	title = StringField('Title', validators=[Required(), Length(max=64)])
 	price = FloatField('Price', validators=[NumberRange(min=0)])
 	info = TextAreaField('Comments', validators=[Optional(), Length(max=256)])
+	bonus = BooleanField('Bonus', default=False)
 
 class OrderCity(Form):
 	cities = SelectField('', coerce=unicode)

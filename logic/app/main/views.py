@@ -559,21 +559,21 @@ def restaurant_order_confirmation():
 	code = 400
 	if not request.json:
 		raise UException('Incorrect request')
-	else:
-		user_id = request.json.get('user_id')
-		if user_id: points_flag = True
-		else: points_flag = False
-		'''total = request.json.get('total')
-		if user_id and points:
-			'''
-		restaurant_id = request.json.get('restaurant_id')
-		if not restaurant_id: raise UException('Incorrect request')
-		flag, result = furls.restaurant_order_confirm(restaurant_id, request.json)
-		if flag:
-			if points_flag:	cli_flag, cli_result = furls.client_add_points(user_id, result['points'])
+	user_id = request.json.get('user_id')
+	if user_id: points_flag = True
+	else: points_flag = False
+	restaurant_id = request.json.get('restaurant_id')
+	if not restaurant_id: 
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_order_confirm(restaurant_id, request.json)
+	if flag:
+		code = 201
+		'''if points_flag:
+			print result['points']
+			cli_flag, cli_result = furls.client_add_points(user_id, result['points'])
 			if cli_flag: code = 201
-			else: code = cli_result['status_code']
-		else: code = result['status_code']
+			else: code = cli_result['status_code']	'''	
+	else: code = result['status_code']
 	return jsonify(result), code
 
 
@@ -634,7 +634,13 @@ def restaurant_order_status_change():
 	if not status_type or not order_id or not restaurant_id:
 		raise UException('Incorrect request')
 	flag, result = furls.restaurant_order_status_change(restaurant_id, order_id, status_type)
-	if flag: code = 200
+	if flag: 
+		code = 200
+		user_id = result['user_id']
+		if user_id:
+			cli_flag, cli_result = furls.client_add_points(user_id, result['points'])
+			if cli_flag: code = 200
+			else: code = cli_result['status_code']
 	else: code = result['status_code']
 	return jsonify(result), code
 

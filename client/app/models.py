@@ -62,6 +62,11 @@ class Client(db.Model):
 			raise ValueError('Incorrect telephone format')
 		return value
 
+	@validates('points')
+	def validate_telephone(self, key, value):
+		if value < 0: value = 0
+		return value
+
 	def __repr__(self):
 		return '<User: name: %s, email: %s, user_id: %d' % (self.name, self.telephone, self.user_id)
 

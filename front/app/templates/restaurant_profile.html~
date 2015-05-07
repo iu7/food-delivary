@@ -75,8 +75,7 @@
 				</tr>
 				<tr>
 					<td align=right><h4>activated</h4></td>
-					<td><h4><font color="black">{% if user['activated'] %}<b>Yes</b>{%else%}
-						<b>No</b> <h5>(Contact the administrator)</h5>{% endif %}</font></h4></td>
+					<td><h4><font color="black">{% if user['activated'] %}<b>Yes</b>{%else%}<b>No</b> <h5>(Contact the administrator)</h5>{% endif %}</font></h4></td>
 				</tr>
 			</table>
 			<hr class="featurette-divider">

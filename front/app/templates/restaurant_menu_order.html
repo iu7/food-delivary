@@ -48,6 +48,8 @@ function findTotal(min_payment){
     else
 	document.getElementById("confBtn").disabled = false;
 }
+
+
 </script>
 
 {% endblock body %}
@@ -80,13 +82,23 @@ function findTotal(min_payment){
 			</div>
 		     {% endif %}
 			{% if menu_data %}
-			<form method="GET" action="{{url_for('main.order_confirmation',name=name, city=city, 							restaurant_id=restaurant_id) }}">
+			<form method="GET" action="{{url_for('main.order_confirmation',name=name, city=city, 
+							restaurant_id=restaurant_id) }}">
+			{% if client %}
+			<div align="center">
+				<b>You have {{points}} points</b><br>
+			</div><br>
+			{% endif %}
 			{% for menu in menu_data['menu']['menu_items'] %}
+			{% if (client and not menu['bonus']) or (client and menu['bonus'] and menu['price'] <= points) 
+							or (not client and not menu['bonus']) %}
 			{#<hr class="featurette-divider">#}
 			<div class=container align=center>
 			<div class="list-group">
+			
 			<div href="#" class="list-group-item">
-			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
+			    {% if menu['bonus'] %}<font color="#3EA055"><b>Bonus</b></font>{% else %}<font color="#9C3B3B">
+				 <b>Menu item</b> </font>{%endif%}</b></h5>
 			    <div class="list-group-item-text">
 			     <table title="{{menu['title']}}">
 				<tr>
@@ -94,7 +106,7 @@ function findTotal(min_payment){
 					<td><b>{{menu['title']}}</b> {% endif %}</td>				
 				</tr>
 				<tr>
-					<td align=right>{% if menu['price'] %} Price:</td>
+					<td align=right>{% if menu['price'] %}{%if menu['bonus']%} Points:{%else%} Price:{%endif%}</td>
 					<td><b>{{menu['price']}}</b> {% endif %}</td>
 				</tr>
 				<tr>
@@ -106,22 +118,34 @@ function findTotal(min_payment){
 			     <br>
 				<table>
 				<tr>
-					<td>Amount:</td>
+					 {%if not menu['bonus']%}<td>Amount:</td>{%endif%}
 					<td>
-					    <input size="5" value="0" name="order_list" 
+					    {%if not menu['bonus']%}
+					          <input size="5" value="0" name="order_list" 
 							onchange="findTotal({{min_payment}});"
 							id="{{menu['menu_item_id']}}" type="number" min="0" max="99"/>
-					    <input type="hidden" value="{{menu['price']}}" name="price_list"/>
+						 
+				            {% else %}
+						  <input size="5" value="0" name="order_list"
+							id="{{menu['menu_item_id']}}" type="hidden" min="0" max="99"/>
+						  <input size="5" value="{{menu['menu_item_id']}},{{menu['price']}},{{menu['title']}}" 									name="bonus_list"
+							id="{{menu['menu_item_id']}}" type="radio" ondblclick="this.checked=false;"/>
+					    {% endif %}
+					    <input type="hidden" {%if not menu['bonus']%}value="{{menu['price']}}"{%else%}value="0"
+							{%endif%} name="price_list"/>
 					    <input type="hidden" value="{{menu['menu_item_id']}}" name="menu_item_list"/>
 					    <input type="hidden" value="{{menu['title']}}" name="menu_title_list"/>
+					
 					</td>
 				</tr>
 				
 				</table>
 			    </div>
 			</div>
+			
 			</div>
 			</div>{#CONTAINER DIV#}
+			{% endif %}
 			{% endfor %}
 			<hr class="featurette-divider">
 			<div align=center><b>Minimal order cost is {{min_payment}}</b></div><br>

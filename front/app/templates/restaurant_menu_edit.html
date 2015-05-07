@@ -62,7 +62,6 @@
   				  <strong>Success!</strong> {{ result_message }}
 			</div>
 		     {% endif %}
-
 			<form method="POST" action="{{ url_for('main.restaurant_menu_update',name=user['name'],menu_id=menu_id,
 				restaurant_id=restaurant_id,menu_item_id=menu_item_id) }}" id="form">
 				{{ form.hidden_tag() }}

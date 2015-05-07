@@ -62,14 +62,14 @@
   				  <strong>Success!</strong> {{ result_message }}
 			</div>
 		     {% endif %}
-
 			<form method="POST" action="{{ url_for('main.restaurant_menu_update',name=user['name'],menu_id=menu_id,
 				restaurant_id=restaurant_id,menu_item_id=menu_item_id) }}" id="form">
 				{{ form.hidden_tag() }}
+				<div title="Check to mark this item as bonus">{{ wtf.form_field(form.bonus) }}</div>
 				{{ wtf.form_field(form.title) }}
 				{{ wtf.form_field(form.price) }}
 				{{ wtf.form_field(form.info) }}
-				<div align=center>
+				<div align=left>
 				 <button type="submit" class="btn btn-primary" id="form">Update</button>
 				</div>
 			 </form>		 

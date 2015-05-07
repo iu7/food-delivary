@@ -79,9 +79,11 @@
 						<td align=right>{{order[2]}}</td><td>{{order[1]}}</td><td>{{order[0]}}</td>
 					</tr>
 				{% endfor %}
-			</table>
+			</table><br>
 			<div align=center>Delivery payment: {%if delivery_payment %}{{delivery_payment}}{%else%}0{%endif%}</div>
-			<br>
+			{%if bonus_title %}<br>
+			<div align=center>You've chosen: <b>{{bonus_title}}</b> for <b>{{bonus_price}} </b>points</div>
+			{%endif%}<br>
 			<div align=center><b>Total: {%if total %}{{total}}{%else%}0{%endif%}</b></div>
 			<hr class="featurette-divider">
 			<div align=center><h4><i><b>Contact and address information</b></i></h4></div>

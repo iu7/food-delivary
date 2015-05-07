@@ -70,7 +70,7 @@
 
 		     <div class=container align=center>
 		      <div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle"	type="button" data-toggle="dropdown">Add menu item</button>
+			<button class="btn btn-primary dropdown-toggle"	type="button" data-toggle="dropdown">Add menu item / Bonus</button>
 		        <ul class="dropdown-menu" aria-labelledby="add_menu" style="background-color:#CCCCDF;padding:10px;">
 			
 			     <form method="POST" action="{{ url_for('main.restaurant_menu',name=user['name'],
@@ -79,6 +79,7 @@
 				{{ wtf.form_field(form.title) }}
 				{{ wtf.form_field(form.price) }}
 				{{ wtf.form_field(form.info) }}
+				<div title="Check to mark this item as bonus">{{ wtf.form_field(form.bonus) }}</div>
 				<div align=center>
 				  <button class="btn btn-success"> <div class="glyphicon glyphicon-plus"></div>
 				  </button>
@@ -95,16 +96,20 @@
 			<div class=container align=center>
 			<div class="list-group">
 			<div href="#" class="list-group-item">
-			    {#<h5 class="list-group-item-heading"><font color="black"><b>{{menu['title']}}</b></font></h5>#}
+			    <h5 class="list-group-item-heading"><b>
+				{% if menu['bonus'] %}<font color="#3EA055">Bonus</font>{% else %}<font color="#3B9C9C">
+				 Menu item </font>{%endif%}</b></h5>
+			    
 			    <div class="list-group-item-text" title="{{menu['title']}}">
 			     <table>
 				<tr>
-					<td align=right>{% if menu['price'] %} Title:</td>
+					<td align=right>{% if menu['title'] %} Title:</td>
 					<td><b>{{menu['title']}}</b> {% endif %}</td>
 					
 				</tr>
 				<tr>
-					<td align=right>{% if menu['price'] %} Price:</td>
+					<td align=right>{% if menu['price'] %}
+					{% if menu['bonus'] %} Points:{% else %} Price: {% endif %}</td>
 					<td><b>{{menu['price']}}</b> {% endif %}</td>
 				</tr>
 				<tr>

@@ -181,7 +181,7 @@ def client_list():
 	return jsonify(clients=Client.get_clients())
 
 
-@main.route('/client/add/points')
+@main.route('/client/add/points', methods=['PUT'])
 def client_add_points():
 	user_id = request.json.get('user_id')
 	points = request.json.get('points')

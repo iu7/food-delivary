@@ -468,7 +468,11 @@ class Menu(db.Model):
 	def get_menu(self):
 		mitem_list = []
 		for menu_item in self.menu_items:
-			mitem_list.append(menu_item.get_menu_item())
+			if menu_item.bonus == True:
+				mitem_list.append(menu_item.get_menu_item())
+		for menu_item in self.menu_items:
+			if menu_item.bonus != True:
+				mitem_list.append(menu_item.get_menu_item())
 		return {'menu_id' : self.id, 'menu_items' : mitem_list}
 
 	@validates('restaurant_id')
@@ -487,19 +491,21 @@ class MenuItem(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(RestaurantConfig.MENU_TITLE_LEN))
 	price = db.Column(db.Float)
+	bonus = db.Column(db.Boolean, default=False)
 	info = db.Column(db.String(RestaurantConfig.MENU_INFO_MAX))
 	menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
 	#orderlist = db.relationship('OrderList', cascade='all,delete', backref='menuitem')
-	bonuses = db.relationship('Bonus', cascade='all,delete', backref='menuitem')
+	#bonuses = db.relationship('Bonus', cascade='all,delete', backref='menuitem')
 
-	def __init__(self, menu_id, title, price, info):
+	def __init__(self, menu_id, title, price, info, bonus):
 		self.title = title
 		self.price = price
 		self.menu_id = menu_id
 		self.info = info
+		self.bonus = bonus
 
 	def get_menu_item(self):
-		return {'menu_item_id' : self.id, 'title' : self.title, 'price' : self.price, 'info':self.info}
+		return {'menu_item_id' : self.id, 'title' : self.title, 'price' : self.price, 'info':self.info, 'bonus' : self.bonus}
 
 	@validates('title')
 	def validate_title(self, key, value):
@@ -613,6 +619,7 @@ class Orders(db.Model):
 	total = db.Column(db.Float)
 	delivery_payment = db.Column(db.Float)
 	points = db.Column(db.Float)
+	bonus_price = db.Column(db.Float, default=0)
 	online_payment = db.Column(db.Boolean, default=False)
 	restaurant_name = db.Column(db.String(RestaurantConfig.NAME_MAX_LEN), default=None)
 	info = db.Column(db.String(RestaurantConfig.INFO_LEN))
@@ -622,16 +629,17 @@ class Orders(db.Model):
 	destination_list = db.relationship('CustomerDestination', cascade='all,delete', backref='order')
 	order_list = db.relationship('OrderList', cascade='all,delete', backref='order')
 
-	def __init__(self, restaurant_id, restaurant_name, online_payment, total, delivery_payment, user_id):
+	def __init__(self, restaurant_id, restaurant_name, online_payment, total, delivery_payment, bonus_price, user_id):
 		self.restaurant_id = restaurant_id
 		self.user_id = user_id
 		self.restaurant_name = restaurant_name
 		self.confirmed = False
 		self.canceled = False
 		self.info = ''
+		self.bonus_price = bonus_price
 		self.delivery_payment = delivery_payment
 		self.total = float(total) + float(delivery_payment)
-		self.points = round(float(total) / RestaurantConfig.BONUS_PERCENTS, 2)
+		self.points = round((float(total) + float(delivery_payment)) / RestaurantConfig.BONUS_PERCENTS, 2)
 		self.online_payment = online_payment
 		self.__date = datetime.utcnow()
 

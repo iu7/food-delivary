@@ -507,6 +507,7 @@ def restaurant_menu(name):
 					menu_id = request.args.get('menu_id')
 					restaurant_id = request.args.get('restaurant_id')
 					flag, result = furls.restaurant_menu_item_create(restaurant_id, menu_id, form.data)
+					print form.data
 					if flag:
 						response = redirect(url_for('main.restaurant_menu', name=name, result_message='Created!'))
 					else:
@@ -631,14 +632,20 @@ def make_order_from_restaurant(city, name):
 	response = make_response(render_template('404.html'))
 	session_id = request.cookies.get('session_id')
 	user = None
+	client = None
+	points = 0
 	if session_id:
 		flag, result = furls.auth_session_state(session_id, user_data=True)	
-		if flag: user = result['user']
+		if flag: 
+			user = result['user']
+			if result['role'] == 'Client':
+				client = True
+				points = result['user']['points']
 	restaurant_id = request.args.get('restaurant_id')
 	flag, result = furls.restaurant_menu(user_id=None, restaurant_id=restaurant_id)
 	min_payment = request.args.get('min_payment')
 	response = make_response(render_template('restaurant_menu_order.html', user=user, menu_data=result,\
-				min_payment=min_payment,city=city,name=name, restaurant_id=restaurant_id))
+				min_payment=min_payment,city=city,name=name, restaurant_id=restaurant_id, client=client, points=points))
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
@@ -660,13 +667,15 @@ def order_confirmation(city, name, restaurant_id):
 		price_list = session.get('price_list') or []
 		menu_title_list = session.get('menu_title_list') or []
 		total = session.get('total')
+		bonus_price = session.get('bonus_title')
+		bonus_title = session.get('bonus_price')				
 		session['delivery_payment'] = rattr['delivery_payment']
 		if total is not None: total = float(total) + rattr['delivery_payment']
 		session['client_data'] = form.data
 		response = make_response(render_template('order_final_confirmation.html',city=city, name=name,\
 				client_data=form.data,restaurant_id=restaurant_id, online_payment_poss=online_payment_poss,\
-				order_list=zip(order_list, price_list, menu_title_list), total=total, user=user,\
-					delivery_payment=rattr['delivery_payment']))
+				order_list=zip(order_list, price_list, menu_title_list), total=total, user=user,bonus_title=bonus_title,\
+					bonus_price=bonus_price, delivery_payment=rattr['delivery_payment']))
 	else:
 		addresses = None
 		#if not session.get('order_list'):
@@ -681,6 +690,14 @@ def order_confirmation(city, name, restaurant_id):
 		session['price_list'] = price_list
 		session['menu_title_list'] = menu_title_list
 		session['total'] = request.args.get('total')
+		bonus = request.args.get('bonus_list')
+		if bonus is not None: 
+			bonus = bonus.split(',')
+			try:
+				session['bonus_id'] = bonus[0]
+				session['bonus_price'] = bonus[1]
+				session['bonus_title'] = bonus[2]
+			except Exception(): pass
 		if flag:
 			if auth_result['role'] == 'Client':
 				flag, addresses = furls.client_address_list(auth_result['user_id'])
@@ -693,11 +710,14 @@ def order_confirmation(city, name, restaurant_id):
 	return response
 
 def clear_session_order():
-	order_list = session.pop('order_list', None)
-	price_list = session.pop('price_list', None)
-	title_list = session.pop('menu_title_list', None)
-	total = session.pop('total', None)
-	client_data = session.pop('client_data', None)
+	session.pop('order_list', None)
+	session.pop('price_list', None)
+	session.pop('menu_title_list', None)
+	session.pop('total', None)
+	session.pop('client_data', None)
+	session.pop('bonus_id', None)
+	session.pop('bonus_title', None)
+	session.pop('bonus_price', None)
 
 @main.route('/orders/<city>/restaurants/<name>/<int:restaurant_id>/confirmation', methods=['POST', 'GET'])
 def order_confirmation_check(name, city, restaurant_id):
@@ -719,6 +739,7 @@ def order_confirmation_check(name, city, restaurant_id):
 		total = session.get('total')
 		delivery_payment = session.get('delivery_payment')
 		client_data = session.get('client_data')
+		bonus_price = session.get('bonus_price')
 		if not order_list or not price_list or not title_list or not total or not client_data:
 			response = make_response(render_template('order_result.html', user=user, name=name, \
 					city=city, result_message='Order list is empty!'))
@@ -726,7 +747,7 @@ def order_confirmation_check(name, city, restaurant_id):
 			if online_payment: payment = True
 			else: payment = False
 			flag, result = furls.restaurant_order_confirm(restaurant_id, order_list, price_list,\
-						title_list, total, client_data, online_payment, delivery_payment, user_id)
+						title_list, total, client_data, online_payment, delivery_payment, bonus_price, user_id)
 			if flag: 
 				if not online_payment:
 					response = make_response(render_template('order_result.html', user=user,name=name,\
@@ -872,10 +893,6 @@ def administration_orders():
 		if flag and auth_result['role'] == 'Administrator':
 			response = make_response(render_template('admin_orders.html',user=auth_result['user']))
 	return response
-
-
-
-
 
 
 

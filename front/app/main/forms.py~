@@ -149,7 +149,7 @@ class HistoryType(Form):
 
 
 class RestaurantStatus(Form):
-	status = SelectField('Activation status', coerce=unicode, chaices=[('activated', 'Activated'), ('not activated', 'Not activated')])
+	status = SelectField('Activation status', coerce=unicode, choices=[('activated', 'Activated'), ('not activated', 'Not activated')])
 
 
 
