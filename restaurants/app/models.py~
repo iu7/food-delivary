@@ -804,6 +804,8 @@ class City(db.Model):
 	def validate_name(self, key, value):
 		if any(v.isdigit() for v in value):
 			raise ValueError('Incorrect city name')
+		if City.query.filter_by(name=value).first() is not None:
+			raise ValueError('City with %s name already exists' % value)
 		return value
 
 	@staticmethod

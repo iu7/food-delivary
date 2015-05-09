@@ -152,6 +152,18 @@ class HistoryType(Form):
 class RestaurantStatus(Form):
 	status = SelectField('Activation status', coerce=unicode, choices=[('activated', 'Activated'), ('not activated', 'Not activated')])
 
+class AdditionalSettings(Form):
+	cuisines = SelectMultipleField('Choose cuisines to delete', coerce=int)
+	new_cuisine = StringField('New cuisine', validators=[Optional()])
+	cities = SelectMultipleField('Choose cities to delete', coerce=unicode)
+	new_city = StringField('New city', validators=[Optional()])
+
+
+
+
+
+
+
 
 
 

@@ -576,7 +576,7 @@ def restaurant_cities():
 @main.route('/restaurant/cities/add', methods=['POST'])
 def restaurant_cities_add():
 	city = request.json.get('city')
-	if not cities:
+	if not city:
 		raise UException('Incorrect request')
 	try:
 		db.session.add(City(city))
@@ -585,7 +585,7 @@ def restaurant_cities_add():
 		raise UException(message=error.message)
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
-	return jsonify(city), 201
+	return jsonify(status='created', city=city), 201
 
 @main.route('/restaurant/cuisines/list')
 def restaurant_cuisines_list():
@@ -596,6 +596,8 @@ def restaurant_cuisines_list():
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(cuisines)
+
+
 
 
 @main.route('/restaurant/list/by_preferences')
@@ -725,6 +727,32 @@ def restaurant_activated(restaurant_id):
 	except Exception as exc:
 		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
 	return jsonify(status='changed', restaurant_id=restaurant.id, activated=restaurant.activated)
+
+
+@main.route('/restaurant/additional/attributes/delete', methods=['DELETE'])
+def restaurant_additional_attr_delete():
+	cities = request.json.get('cities')
+	cuisines = request.json.get('cuisines')
+	if not cuisines and not cities:
+		raise UException('Incorrect request')
+	try:
+		if cuisines:
+			for cuisine_id in cuisines:
+				cuisine = Cuisine.query.filter_by(id=cuisine_id).first()
+				db.session.delete(cuisine)
+		if cities:
+			for city_name in cities:
+				city = City.query.filter_by(name=city_name).first()
+				db.session.delete(city)
+		db.session.commit()
+	except Exception as exc:
+		raise UException(message='Unexpected server exception', status_code=500, payload=exc.message)
+	return jsonify(status='deleted')
+
+
+
+
+
 
 
 

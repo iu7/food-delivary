@@ -54,6 +54,7 @@ class Restaurant(db.Model):
 		result = []
 		restaurant_list = Restaurant.query.filter_by(activated=True).all()
 		for restaurant in restaurant_list:
+			
 			if restaurant.address[0].city != city: continue
 			if not cuisines: flag = True
 			else:
@@ -804,6 +805,8 @@ class City(db.Model):
 	def validate_name(self, key, value):
 		if any(v.isdigit() for v in value):
 			raise ValueError('Incorrect city name')
+		if City.query.filter_by(name=value).first() is not None:
+			raise ValueError('City with %s name already exists' % value)
 		return value
 
 	@staticmethod

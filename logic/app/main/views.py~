@@ -634,7 +634,6 @@ def restaurant_order_status_change():
 	if not status_type or not order_id or not restaurant_id:
 		raise UException('Incorrect request')
 	flag, result = furls.restaurant_order_status_change(restaurant_id, order_id, status_type)
-	
 	if flag: 
 		code = 200
 		user_id = result['user_id']
@@ -654,6 +653,27 @@ def restaurant_activated(restaurant_id):
 	if flag: code = 200
 	else: code = result['status_code']
 	return jsonify(result), code
+
+@main.route('/restaurant/cuisine/create', methods=['POST'])
+def create_cuisines():
+	title = request.args.get('title')
+	if not title:
+		raise UException('Incorrect title')
+	flag, result = furls.restaurant_cuisine_create(title)
+	if flag: code = 201
+	else: code = result['status_code']
+	return jsonify(result), code
+
+@main.route('/restaurant/additional/attributes/delete', methods=['DELETE'])
+def restaurant_additional_attr_delete():
+	data = request.json.get('data')
+	if not data:
+		raise UException('Incorrect request')
+	flag, result = furls.restaurant_attributes_add_delete(data)
+	if flag: code = 201
+	else: code = result['status_code']
+	return jsonify(result), code
+
 
 
 

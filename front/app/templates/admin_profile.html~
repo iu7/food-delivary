@@ -63,38 +63,14 @@
 				</div>
 				</div>
 			</a>
-			<a href="{{ url_for('main.administration_orders') }}">
+			<a href="{{ url_for('main.administration_additional') }}">
 				<div class="jumbotron" style="background-color: #728FCE;">
 				<div class="container" align=center>
-					<h3><font color="white"><b>Orders</b></font></h3>
+					<h3><font color="white"><b>Additional</b></font></h3>
 				</div>
 				</div>
 			</a>
-			{#<table>
-			<hr class="featurette-divider">
-			<tr>
-			<td>
-				<a href="{{url_for('main.user_data_edit',name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Profile Edit</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.user_password_change', name=user['name'])}}">
-					<button type="submit" class="btn btn-primary" id="submit">Password Change</button>
-				</a>
-			</td>
-			<td>
-				<a href="{{url_for('main.client_address_list', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">Addresses</button>
-				</a>
-			</td>
-			{#<td>
-				<a href="{{url_for('main.client_profile_history', name=user['name'])}}">
-					<buttontype="submit" class="btn btn-success" id="submit">History</button>
-				</a>
-			</td>#}
-			</tr>
-			</table>#}
+			
 		    </div>
 	     </div>
 	    </div>

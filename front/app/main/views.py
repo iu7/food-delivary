@@ -4,7 +4,8 @@ from . import main
 import requests
 from flask import current_app, abort
 from forms import ClientRegisterForm, RestaurantRegisterForm, RestaurantEditForm,AttributesForm,OrderAttributes,HistoryType,\
-		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, OrderExecution, RestaurantStatus
+		AddressForm, ClientEditForm, UserPasswordEditForm, OfficialForm, MenuItemForm, OrderCity, \
+				AdditionalSettings, OrderExecution, RestaurantStatus
 import furls
 
 #TODO ADMIN
@@ -900,7 +901,52 @@ def administration_orders(restaurant_name):
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
 
-
+@main.route('/administration/restaurant/additional', methods=['POST', 'GET'])
+def administration_additional():
+	response = make_response(render_template('404.html'))
+	session_id = request.cookies.get('session_id')
+	result_message = request.args.get('result_message')
+	error_message = request.args.get('error_message')
+	if session_id:
+		flag, auth_result = furls.auth_session_state(session_id, user_data=True)
+		if flag and auth_result['role'] == 'Administrator':
+			restaurant_id = request.args.get('restaurant_id')
+			cuisines_flag, cuisines_result = furls.restaurant_get_cuisines()
+			city_flag, city_result = furls.restaurant_get_cities()
+			form = AdditionalSettings()
+			if city_flag and cuisines_flag:
+				form.cuisines.choices = [(x['id'], x['title']) for x in cuisines_result['cuisine_list']]
+				form.cities.choices = [(x,x) for x in city_result['cities_list']]
+				if form.validate_on_submit():
+					try:
+						new_city = request.form.get('new_city')
+						if new_city: flag, result = furls.restaurant_cities_add(new_city)
+						if not flag: raise Exception(result['message'])
+						new_cuisine = request.form.get('new_cuisine')
+						if new_cuisine: flag, result = furls.restaurant_cuisine_create(new_cuisine)
+						if not flag: raise Exception(result['message'])
+						cities = request.form.getlist('cities')
+						cuisines = request.form.getlist('cuisines')
+						print cuisines, cities
+						if cities or cuisines:
+							flag, result = furls.restaurant_attributes_add_delete(cuisines, cities)
+							if not flag: raise Exception(result['message'])
+					except Exception as exc:
+						response = make_response(render_template('admin_additional.html',user=auth_result['user'],\
+									error_message=exc.message, form=form))
+					else:
+						response = redirect(url_for('main.administration_additional'))
+				else:
+					response = make_response(render_template('admin_additional.html',user=auth_result['user'],
+						form=form))
+			else:
+				if not city_flag: error_message = city_result['message']
+				elif not cuisines_flag: error_message = cuisines_result['message']
+				response = make_response(render_template('admin_additional.html',user=auth_result['user'],
+					error_message=error_message, form=form))
+				
+	if session_id: response.set_cookie('session_id', session_id)
+	return response
 
 
 

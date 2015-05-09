@@ -333,4 +333,23 @@ def restaurant_activated_change(restaurant_id):
 
 
 
+def restaurant_cuisine_create(title):
+	api_url = logic_url + '/restaurant/cuisine/create'
+	r = requests.post(api_url, params={'title':title})
+	if r.status_code == 201:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+def restaurant_attributes_add_delete(cuisines=None, cities=None):
+	if cities is []: cities = None
+	if cuisines is []: cuisines = None
+	api_url = logic_url + '/restaurant/additional/attributes/delete'
+	r = requests.delete(api_url, data=json.dumps({'data':{'cities':cities, 'cuisines':cuisines}}), headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
 

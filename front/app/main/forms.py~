@@ -118,6 +118,7 @@ class MenuItemForm(Form):
 	title = StringField('Title', validators=[Required(), Length(max=64)])
 	price = FloatField('Price', validators=[NumberRange(min=0)])
 	info = TextAreaField('Comments', validators=[Optional(), Length(max=256)])
+	bonus = BooleanField('Bonus', default=False)
 
 class OrderCity(Form):
 	cities = SelectField('', coerce=unicode)
@@ -150,6 +151,18 @@ class HistoryType(Form):
 
 class RestaurantStatus(Form):
 	status = SelectField('Activation status', coerce=unicode, choices=[('activated', 'Activated'), ('not activated', 'Not activated')])
+
+class AdditionalSettings(Form):
+	cuisines = SelectMultipleField('Choose cuisines to delete', coerce=int)
+	new_cuisine = StringField('New cuisine', validators=[Optional()])
+	city = SelectMultipleField('Choose cities to delete', coerce=unicode)
+	new_city = StringField('New city', validators=[Optional()])
+
+
+
+
+
+
 
 
 

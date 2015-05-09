@@ -434,3 +434,22 @@ def client_add_points(user_id, points):
 	else: flag = False
 	return flag, json.loads(r.text)
 
+def restaurant_cuisine_create(title):
+	api_url = restr_url + '/restaurant/cuisine/create'
+	r = requests.post(api_url, data=json.dumps({'title':title}), headers=JSON_HEADER)
+	if r.status_code == 201:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+def restaurant_attributes_add_delete(data):
+	api_url = restr_url + '/restaurant/additional/attributes/delete'
+	r = requests.delete(api_url, data=json.dumps(data), headers=JSON_HEADER)
+	if r.status_code == 200:
+		flag = True
+	else: flag = False
+	return flag, json.loads(r.text)
+
+
+
