@@ -171,7 +171,3 @@ def user_list(role):
 		raise UException('Incorrect request')
 	users = User.get_users(role)
 	return jsonify(users=users)
-
-
-
-

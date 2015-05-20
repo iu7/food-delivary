@@ -21,7 +21,7 @@ def auth_register(email, password, role='Client'):
 		data=json.dumps({'email':email, 'password':password,'role':role}), headers=JSON_HEADER)
 	if r.status_code == 201:
 		flag = True
-	else: 
+	else:
 		flag = False
 	return flag, json.loads(r.text)
 
@@ -82,7 +82,7 @@ def auth_user_delete(session_id, email, password):
 def auth_user_raw_delete(user_id):
 	api_url = auth_url + '/auth/user/raw_delete'
 	r = requests.delete(api_url, params={'user_id':user_id})
-	if r.status_code == 200: 
+	if r.status_code == 200:
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
@@ -98,7 +98,7 @@ def cli_register(user_id, name, telephone):
 	if r.status_code == 201: flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
-	
+
 
 def cli_update(user_id, name, telephone):
 	api_url = cli_url + '/client/data/update'
@@ -173,7 +173,7 @@ def restr_get_cuisines(city=None):
 	else: r = requests.get(api_url)
 	if r.status_code == 200: flag = True
 	else: flag = False
-	return flag, json.loads(r.text)	
+	return flag, json.loads(r.text)
 
 
 def restr_register(user_id, name, email, telephone):
@@ -363,7 +363,7 @@ def restaurant_order_confirm(restaurant_id, data):
 	if r.status_code == 201:
 		flag = True
 	else: flag = False
-	return flag, json.loads(r.text)	
+	return flag, json.loads(r.text)
 
 def restaurant_client_history(user_id):
 	api_url = restr_url + '/restaurant/client/history'
@@ -450,6 +450,3 @@ def restaurant_attributes_add_delete(data):
 		flag = True
 	else: flag = False
 	return flag, json.loads(r.text)
-
-
-
