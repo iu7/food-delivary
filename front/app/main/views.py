@@ -590,17 +590,17 @@ def make_order():
 		if flag: user = result['user']
 
 	form = OrderCity()
-	form.cities.choices = session.get('cities')
-	if request.method == 'POST' and form.cities.choices is None:
-		flag, result = furls.restaurant_get_cities(real_city=True)
-		form.cities.choices = [(x,x) for x in result['cities_list']]
+	#form.cities.choices = session.get('cities')
+	#if request.method == 'POST' and form.cities.choices is None:
+	flag, result = furls.restaurant_get_cities(real_city=True)
+	form.cities.choices = [(x,x) for x in result['cities_list']]
 	if form.validate_on_submit():
-		session.pop('cities', None)
+		#session.pop('cities', None)
 		response = redirect(url_for('main.make_order_menus', city=form.data.get('cities')))
 	else:
-		flag, result = furls.restaurant_get_cities(real_city=True)
-		form.cities.choices = [(x,x) for x in result['cities_list']]
-		session['cities'] = form.cities.choices
+		#flag, result = furls.restaurant_get_cities(real_city=True)
+		#form.cities.choices = [(x,x) for x in result['cities_list']]
+		#session['cities'] = form.cities.choices
 		response = make_response(render_template('orders_city.html', user=user, form=form))
 	if session_id: response.set_cookie('session_id', session_id)
 	return response
