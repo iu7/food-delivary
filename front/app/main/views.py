@@ -594,7 +594,8 @@ def make_order():
 	#if request.method == 'POST' and form.cities.choices is None:
 	flag, result = furls.restaurant_get_cities(real_city=True)
 	form.cities.choices = [(x,x) for x in result['cities_list']]
-	if form.validate_on_submit():
+	
+	if form.data.get('cities'):#form.validate_on_submit():
 		#session.pop('cities', None)
 		response = redirect(url_for('main.make_order_menus', city=form.data.get('cities')))
 	else:
