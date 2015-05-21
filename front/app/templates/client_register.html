@@ -31,8 +31,9 @@
 				  </div>
 		{% endif %}
 		<form method="POST" action="{{ url_for('main.client_register') }}" id="form">
+			  {{ form.hidden_tag() }}
 			 {{ wtf.quick_form(form, form_type='small') }}
-			 {{ form.csrf_token }}
+			 {#{ form.csrf_token }#}
 			 <div align=center><button type="submit" form="form" value="Submit" class="btn btn-primary">Sign up!</button></div>
 		</form>
 		<br>
