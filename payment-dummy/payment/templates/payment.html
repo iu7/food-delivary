@@ -35,6 +35,7 @@
 			</table>
 			<br>
 			<div align="center"><button type="submit" class="btn btn-md btn-success" id="form">Submit</button></div>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 		</form>
 	      </div>
 	    </div>

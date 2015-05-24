@@ -105,6 +105,7 @@
 				<div align=center>
 				<button type="submit" class="btn btn-success" name="confirm" title="Press to confirm">Confirm order</button>
 				</div>
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			</form>
 			</div>
 			</div>

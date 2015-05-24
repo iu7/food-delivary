@@ -112,7 +112,7 @@ con = db.connect(host='localhost',user='fduser', passwd='fduser')
 cur = con.cursor()
 cur.execute('CREATE DATABASE clients')
 
-engine = create_engine('mysql+mysqldb://fduser:fduser@localhost:5555/clients', \
+engine = create_engine('mysql+mysqldb://fduser:fduser@localhost:3306/clients', \
 					 convert_unicode=True, echo=True)
 
 Base.metadata.create_all(engine)

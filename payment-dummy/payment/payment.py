@@ -7,10 +7,12 @@ from flask.ext.wtf import Form
 from random import randint
 from time import sleep
 from flask import jsonify, session
+from flask_wtf.csrf import CsrfProtect
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SomeNotVerySeriousSecretKeyForDebugVersion'
 bootstrap = Bootstrap(app)
+CsrfProtect(app)
 
 class CardData(Form):
 	valid_thru_year = SelectField('Year', coerce=int, choices=[(x,x) for x in range(date.today().year, date.today().year+10)])

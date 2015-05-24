@@ -54,6 +54,7 @@
 					<div class="content">
 					{{ wtf.form_field(form.status, onclick="this.form.submit()") }}
 					</div></div>
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 				</form>
 			</div><br><br><br><br>
 
@@ -99,6 +100,7 @@
 						value="{{restaurant['restaurant_id']}}">Change</button></td>
 	
 				</tr></table>
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			</form>
 			<br><br>
 			<a href=" {{url_for('main.administration_orders', restaurant_name=restaurant['name'], 
