@@ -1,6 +1,0 @@
-from flask.ext.mail import Message
-
-'''
-def send_email(to, subject, template, **kwargs):
-	msg = Message(app.config['MAIL_SUBJECT_PREFIX'] + subject, sender=app.config['MAIL_SENDER'], recipients=[to])
-'''
